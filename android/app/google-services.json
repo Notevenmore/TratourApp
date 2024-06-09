@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "116999090862",
+    "project_id": "tratourapp",
+    "storage_bucket": "tratourapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116999090862:android:c2cad520368f645616f33f",
+        "android_client_info": {
+          "package_name": "com.example.tratour"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK22ZFHSqKT6kD24e3cBDT717u4HP6h-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

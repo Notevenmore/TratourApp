@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tratour/Login.dart';
 
@@ -18,14 +20,28 @@ class _RegisterState extends State<Register> {
   bool _isPasswordVisible = false;
 
   void registerUser() {
-    print(_nameController);
+    FirebaseFirestore.instance.collection(widget.tipe).add({
+      "name": _nameController.text,
+      "email": _emailController.text,
+      "telnumber": _telnumberController.text,
+      "password": _passwordController.text,
+      "tipe": widget.tipe,
+    }).then((DocumentReference doc) =>
+        print('DocumentSnapshot added with ID: ${doc.id}'));
+    login();
+  }
+
+  void login() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const Login()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: Stack(children: [
+      appBar: AppBar(),
+      body: Stack(
+        children: [
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -75,10 +91,7 @@ class _RegisterState extends State<Register> {
                   child: ElevatedButton(
                     onPressed: () {
                       // kirim data
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Login()),
-                      );
+                      registerUser();
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
@@ -137,10 +150,83 @@ class _RegisterState extends State<Register> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 24),
+                Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: const Border(
+                      top: BorderSide(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                      right: BorderSide(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                      bottom: BorderSide(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                      left: BorderSide(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Sign In With Google",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Image.asset(
+                        "assets/img/google.png",
+                        width: 20,
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 44),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have an account?",
+                      style: GoogleFonts.lato(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        login();
+                      },
+                      child: Text(
+                        "Log In",
+                        style: GoogleFonts.lato(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF0185FF),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-        ]));
+        ],
+      ),
+    );
   }
 }
 
@@ -196,7 +282,7 @@ class InputField extends StatelessWidget {
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
             filled: true,
-            fillColor: Color(0xFFF5F5F5),
+            fillColor: const Color(0xFFF5F5F5),
             suffixIcon: hintText == 'Masukkan Password'
                 ? IconButton(
                     icon: Icon(
