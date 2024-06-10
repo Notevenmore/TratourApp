@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tratour/Login.dart';
+import 'package:bcrypt/bcrypt.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 class Register extends StatefulWidget {
   final String Tipe;
@@ -17,23 +20,35 @@ class _RegisterState extends State<Register> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _telnumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   bool _isPasswordVisible = false;
 
-  void registerUser() {
+  String encryptText(String text) {
+    return BCrypt.hashpw(text, BCrypt.gensalt());
+    // final key = encrypt.Key.fromUtf8('SecretKeyorNotYouMustntKnowingit');
+    // final iv = encrypt.IV.fromLength(16);
+    // final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    // final encrypted = encrypter.encrypt(text, iv: iv);
+    // return encrypted.base64;
+  }
+
+  void registerUser() async {
     FirebaseFirestore.instance.collection(widget.tipe).add({
       "name": _nameController.text,
       "email": _emailController.text,
       "telnumber": _telnumberController.text,
-      "password": _passwordController.text,
+      "password": encryptText(_passwordController.text),
       "tipe": widget.tipe,
-    }).then((DocumentReference doc) =>
-        print('DocumentSnapshot added with ID: ${doc.id}'));
-    login();
+    }).then((DocumentReference doc) => login());
   }
 
   void login() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const Login()));
+      context,
+      MaterialPageRoute(
+        builder: (context) => Login(Tipe: widget.tipe),
+      ),
+    );
   }
 
   @override
@@ -111,89 +126,89 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 36),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 2),
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                      width: 150,
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      "or",
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 2),
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                      width: 150,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: const Border(
-                      top: BorderSide(
-                        color: Colors.black,
-                        width: 1,
-                      ),
-                      right: BorderSide(
-                        color: Colors.black,
-                        width: 1,
-                      ),
-                      bottom: BorderSide(
-                        color: Colors.black,
-                        width: 1,
-                      ),
-                      left: BorderSide(
-                        color: Colors.black,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Sign In With Google",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Image.asset(
-                        "assets/img/google.png",
-                        width: 20,
-                        height: 20,
-                      ),
-                    ],
-                  ),
-                ),
+                // const SizedBox(height: 36),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Container(
+                //       padding: const EdgeInsets.only(bottom: 2),
+                //       decoration: const BoxDecoration(
+                //         border: Border(
+                //           bottom: BorderSide(
+                //             color: Colors.black,
+                //             width: 1,
+                //           ),
+                //         ),
+                //       ),
+                //       width: 150,
+                //     ),
+                //     const SizedBox(width: 5),
+                //     Text(
+                //       "or",
+                //       style: GoogleFonts.plusJakartaSans(
+                //         fontSize: 10,
+                //         fontWeight: FontWeight.w700,
+                //       ),
+                //     ),
+                //     const SizedBox(width: 5),
+                //     Container(
+                //       padding: const EdgeInsets.only(bottom: 2),
+                //       decoration: const BoxDecoration(
+                //         border: Border(
+                //           bottom: BorderSide(
+                //             color: Colors.black,
+                //             width: 1,
+                //           ),
+                //         ),
+                //       ),
+                //       width: 150,
+                //     ),
+                //   ],
+                // ),
+                // const SizedBox(height: 24),
+                // Container(
+                //   height: 48,
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(8),
+                //     border: const Border(
+                //       top: BorderSide(
+                //         color: Colors.black,
+                //         width: 1,
+                //       ),
+                //       right: BorderSide(
+                //         color: Colors.black,
+                //         width: 1,
+                //       ),
+                //       bottom: BorderSide(
+                //         color: Colors.black,
+                //         width: 1,
+                //       ),
+                //       left: BorderSide(
+                //         color: Colors.black,
+                //         width: 1,
+                //       ),
+                //     ),
+                //   ),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     children: [
+                //       Text(
+                //         "Sign In With Google",
+                //         style: GoogleFonts.plusJakartaSans(
+                //           fontSize: 12,
+                //           fontWeight: FontWeight.w700,
+                //         ),
+                //       ),
+                //       const SizedBox(width: 8),
+                //       Image.asset(
+                //         "assets/img/google.png",
+                //         width: 20,
+                //         height: 20,
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 const SizedBox(height: 44),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
