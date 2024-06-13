@@ -1,54 +1,75 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tratour/Login.dart';
+import 'package:tratour/auth/Register.dart';
 import 'package:bcrypt/bcrypt.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tratour/main/homepage.dart';
 
-class Register extends StatefulWidget {
+class Login extends StatefulWidget {
   final String Tipe;
   String get tipe => Tipe;
-  const Register({super.key, required this.Tipe});
+  const Login({super.key, required this.Tipe});
   @override
-  _RegisterState createState() => _RegisterState();
+  _LoginState createState() => _LoginState();
 }
 
-class _RegisterState extends State<Register> {
-  final TextEditingController _nameController = TextEditingController();
+class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _telnumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   bool _isPasswordVisible = false;
+  List<Map<String, dynamic>> users = [];
 
-  String encryptText(String text) {
-    return BCrypt.hashpw(text, BCrypt.gensalt());
-    // final key = encrypt.Key.fromUtf8('SecretKeyorNotYouMustntKnowingit');
-    // final iv = encrypt.IV.fromLength(16);
-    // final encrypter = encrypt.Encrypter(encrypt.AES(key));
-    // final encrypted = encrypter.encrypt(text, iv: iv);
-    // return encrypted.base64;
+  void loginUser(BuildContext context) async {
+    Map<String, dynamic> user = {};
+    try {
+      await FirebaseFirestore.instance
+          .collection(widget.tipe)
+          .get()
+          .then((event) => {
+                for (var doc in event.docs)
+                  {
+                    user = doc.data(),
+                    user['id'] = doc.id,
+                    users.add(user),
+                  }
+              });
+      login(context);
+    } catch (e) {}
   }
 
-  void registerUser() async {
-    FirebaseFirestore.instance.collection(widget.tipe).add({
-      "name": _nameController.text,
-      "email": _emailController.text,
-      "telnumber": _telnumberController.text,
-      "password": encryptText(_passwordController.text),
-      "tipe": widget.tipe,
-    }).then((DocumentReference doc) => login());
+  bool decryptText(String password, String hashed) {
+    return BCrypt.checkpw(password, hashed);
   }
 
-  void login() {
+  void login(BuildContext context) {
+    for (var user in users) {
+      if (_emailController.text == user['email']) {
+        if (decryptText(_passwordController.text, user['password'])) {
+          try {
+            homepage_redirect(context, user['id'], user['tipe']);
+            // ignore: empty_catches
+          } catch (e) {}
+        } else {
+          break;
+        }
+      } else {}
+    }
+  }
+
+  void register() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => Register(Tipe: widget.tipe)));
+  }
+
+  void homepage_redirect(BuildContext context, String userid, String usertipe) {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Login(Tipe: widget.tipe),
-      ),
-    );
+        context,
+        MaterialPageRoute(
+            builder: (context) => homepage(
+                  userid: userid,
+                  usertipe: usertipe,
+                )));
   }
 
   @override
@@ -64,7 +85,7 @@ class _RegisterState extends State<Register> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Daftar sebagai ${widget.tipe}",
+                  "Masuk sebagai ${widget.tipe}",
                   style: GoogleFonts.lato(
                     fontSize: 23,
                     fontWeight: FontWeight.w800,
@@ -75,18 +96,8 @@ class _RegisterState extends State<Register> {
                 ),
                 const SizedBox(height: 20),
                 InputField(
-                    controller: _nameController,
-                    hintText: 'Masukkan Nama Lengkap',
-                    obscureText: false),
-                const SizedBox(height: 20),
-                InputField(
                     controller: _emailController,
                     hintText: 'Masukkan Email',
-                    obscureText: false),
-                const SizedBox(height: 20),
-                InputField(
-                    controller: _telnumberController,
-                    hintText: 'Masukkan Nomor HP',
                     obscureText: false),
                 const SizedBox(height: 20),
                 InputField(
@@ -106,7 +117,7 @@ class _RegisterState extends State<Register> {
                   child: ElevatedButton(
                     onPressed: () {
                       // kirim data
-                      registerUser();
+                      loginUser(context);
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
@@ -117,7 +128,7 @@ class _RegisterState extends State<Register> {
                       backgroundColor: const Color(0xFF1D7948),
                     ),
                     child: Text(
-                      'Sign In',
+                      'Log In',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -194,7 +205,7 @@ class _RegisterState extends State<Register> {
                 //     crossAxisAlignment: CrossAxisAlignment.center,
                 //     children: [
                 //       Text(
-                //         "Sign In With Google",
+                //         "Log In With Google",
                 //         style: GoogleFonts.plusJakartaSans(
                 //           fontSize: 12,
                 //           fontWeight: FontWeight.w700,
@@ -215,7 +226,7 @@ class _RegisterState extends State<Register> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Already have an account?",
+                      "Don't have an account?",
                       style: GoogleFonts.lato(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -223,10 +234,10 @@ class _RegisterState extends State<Register> {
                     ),
                     TextButton(
                       onPressed: () {
-                        login();
+                        register();
                       },
                       child: Text(
-                        "Log In",
+                        "Sign In",
                         style: GoogleFonts.lato(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,

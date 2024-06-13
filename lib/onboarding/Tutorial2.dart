@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tratour/Onboarding.dart';
+import 'package:tratour/onboarding/Onboarding.dart';
 
 class Tutorial2 extends StatelessWidget {
   const Tutorial2({super.key});
@@ -101,7 +101,7 @@ class Tutorial2 extends StatelessWidget {
                 onPressed: () {
                   _onNextPressed(context);
                 },
-                icon: Image.asset("assets/pattern/page1/arrowNextYellow.png"))
+                icon: Image.asset("assets/pattern/page2/arrowNextGreen.png"))
           ],
         ),
       ),

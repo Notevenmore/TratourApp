@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tratour/Tutorial2.dart';
-import 'package:tratour/Onboarding.dart';
+import 'package:tratour/onboarding/Tutorial2.dart';
+import 'package:tratour/onboarding/Onboarding.dart';
 
 class Tutorial1 extends StatelessWidget {
   const Tutorial1({super.key});
