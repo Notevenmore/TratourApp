@@ -29,6 +29,17 @@ class _homepageState extends State<homepage> {
     getArticles();
   }
 
+  void _onItemTapped(int index) {
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                homepage(userid: widget.userid, usertipe: widget.usertipe)),
+      );
+    }
+  }
+
   void getData() async {
     try {
       DocumentSnapshot doc = await FirebaseFirestore.instance
@@ -75,7 +86,8 @@ class _homepageState extends State<homepage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => articledetail(articleid: id),
+        builder: (context) => articledetail(
+            articleid: id, userid: widget.userid, usertipe: widget.usertipe),
       ),
     );
   }
@@ -435,6 +447,9 @@ class _homepageState extends State<homepage> {
             ),
       bottomNavigationBar: NavigationBottom(
         selectedIndex: selectedIndex,
+        userid: widget.userid,
+        usertipe: widget.usertipe,
+        onItemTapped: _onItemTapped,
       ),
     );
   }

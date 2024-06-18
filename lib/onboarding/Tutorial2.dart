@@ -62,7 +62,7 @@ class Tutorial2 extends StatelessWidget {
             left: -3,
             child: Image.asset("assets/pattern/page2/Ellipse 846.png")),
         Positioned(
-            top: 630,
+            top: 580,
             left: 55,
             child: Text("Hijaukan Dunia",
                 style: GoogleFonts.plusJakartaSans(
@@ -71,7 +71,7 @@ class Tutorial2 extends StatelessWidget {
                   color: Colors.white,
                 ))),
         Positioned(
-            top: 690,
+            top: 635,
             left: 55,
             width: 283,
             height: 82,

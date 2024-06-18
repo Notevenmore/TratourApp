@@ -73,7 +73,7 @@ class Tutorial1 extends StatelessWidget {
             child: Image.asset("assets/pattern/page1/Ellipse 846.png")),
         // Teks judul utama dari halaman
         Positioned(
-            top: 630,
+            top: 580,
             left: 55,
             child: Text("Hijaukan Dunia",
                 style: GoogleFonts.plusJakartaSans(
@@ -83,7 +83,7 @@ class Tutorial1 extends StatelessWidget {
                 ))),
         // teks paragraf utama dari halaman
         Positioned(
-            top: 690,
+            top: 635,
             left: 55,
             width: 283,
             height: 82,

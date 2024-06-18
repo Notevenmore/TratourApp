@@ -39,6 +39,10 @@ dependencies:
   cloud_firestore: ^5.0.0
   bcrypt: ^1.1.3
   font_awesome_flutter: ^10.7.0
+  google_maps_flutter: ^2.7.0
+  permission_handler: ^11.3.1
+  geolocator: ^12.0.0
+  geocoding: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +83,12 @@ flutter:
     - assets/img/pesanansolid.png
     - assets/img/homeregular.png
     - assets/img/homesolid.png
+    - assets/img/pakaian.png
+    - assets/img/elektronik.png
+    - assets/img/kardus.png
+    - assets/img/minyakgoreng.png
+    - assets/img/organik.png
+    - assets/img/plastic.png
     - assets/pattern/page1/Polygon 1.png
     - assets/pattern/page1/Vector 8.png
     - assets/pattern/page2/Vector 8.png
@@ -88,6 +98,7 @@ flutter:
     - assets/pattern/page1/arrowNextYellow.png
     - assets/pattern/page2/arrowNextGreen.png
     - assets/pattern/page2/Go Green Recycle Truck.png
+    - assets/json/category.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

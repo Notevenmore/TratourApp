@@ -3,13 +3,29 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tratour/menu/sort_trash_menu.dart';
 
 class NavigationBottom extends StatelessWidget implements PreferredSizeWidget {
   int selectedIndex;
-  NavigationBottom({super.key, required this.selectedIndex});
+  String userid;
+  String usertipe;
+  Function(int) onItemTapped;
 
-  void _onItemTapped(int index) {
-    selectedIndex = index;
+  NavigationBottom({
+    super.key,
+    required this.selectedIndex,
+    required this.userid,
+    required this.usertipe,
+    required this.onItemTapped,
+  });
+
+  void goToSortTrashMenu(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              SortTrashMenu(userid: userid, usertipe: usertipe)),
+    );
   }
 
   @override
@@ -71,7 +87,7 @@ class NavigationBottom extends StatelessWidget implements PreferredSizeWidget {
             ],
             currentIndex: selectedIndex,
             selectedItemColor: const Color(0XFF1D7948),
-            onTap: _onItemTapped,
+            onTap: onItemTapped,
           ),
         ),
         Positioned(
@@ -83,7 +99,7 @@ class NavigationBottom extends StatelessWidget implements PreferredSizeWidget {
             backgroundColor: const Color(0XFF1D7948),
             onPressed: () {
               // Handle the button press
-              selectedIndex = 2;
+              goToSortTrashMenu(context);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

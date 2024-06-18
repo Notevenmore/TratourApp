@@ -1,0 +1,46 @@
+[
+  [
+    {
+      "text": "Plastik",
+      "src": "assets/img/plastic.png",
+      "color": "0xFF90CAF9"
+    },
+    {
+      "text": "Organik",
+      "src": "assets/img/organik.png",
+      "color": "0xFF80B118"
+    }
+  ],
+  [
+    {
+      "text": "Minyak Goreng",
+      "src": "assets/img/minyakgoreng.png",
+      "color": "0xFFFDD300",
+      "width": 28,
+      "height": 88
+    },
+    {
+      "text": "Kardus",
+      "src": "assets/img/kardus.png",
+      "color": "0xFFE47304",
+      "width": 88,
+      "height": 61
+    }
+  ],
+  [
+    {
+      "text": "Elektronik",
+      "src": "assets/img/elektronik.png",
+      "color": "0xFF8E8E8E",
+      "width": 84,
+      "height": 84
+    },
+    {
+      "text": "Pakaian",
+      "src": "assets/img/pakaian.png",
+      "color": "0xFF409B81",
+      "width": 109,
+      "height": 76
+    }
+  ]
+]

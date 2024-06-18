@@ -2,18 +2,24 @@ import 'package:tratour/template/bar_app_secondversion.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class articledetail extends StatefulWidget {
   final String articleid;
-  const articledetail({super.key, required this.articleid});
+  final String userid;
+  final String usertipe;
+  const articledetail(
+      {super.key,
+      required this.articleid,
+      required this.userid,
+      required this.usertipe});
 
   @override
   articledetailState createState() => articledetailState();
 }
 
 class articledetailState extends State<articledetail> {
+  int selectedIndex = 0;
   late Map<String, dynamic> article = {};
   bool isLoading = true;
 
@@ -49,7 +55,7 @@ class articledetailState extends State<articledetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BarAppSecondversion(),
+      appBar: const BarAppSecondversion(title: "Artikel untuk kamu"),
       body: !isLoading
           ? SingleChildScrollView(
               child: Center(
@@ -100,6 +106,13 @@ class articledetailState extends State<articledetail> {
             ),
       bottomNavigationBar: NavigationBottom(
         selectedIndex: 0,
+        userid: widget.userid,
+        usertipe: widget.usertipe,
+        onItemTapped: (int index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
       ),
     );
   }
