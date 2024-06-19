@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tratour/menu/detail_pesanan.dart';
 
 import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/template/navigation_bottom.dart';
@@ -37,6 +38,8 @@ class _ChooseLocation extends State<ChooseLocation> {
   final TextEditingController _editController = TextEditingController();
   String currentPlaceName = '';
   String currentAddress = '';
+  double latitude = 0;
+  double longitude = 0;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -66,6 +69,8 @@ class _ChooseLocation extends State<ChooseLocation> {
           );
           currentPlaceName = name;
           currentAddress = address;
+          latitude = position.latitude;
+          longitude = position.longitude;
         });
       }
     } catch (e) {
@@ -125,17 +130,36 @@ class _ChooseLocation extends State<ChooseLocation> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                homepage(userid: widget.userid, usertipe: widget.usertipe)),
+          builder: (context) =>
+              homepage(userid: widget.userid, usertipe: widget.usertipe),
+        ),
       );
     } else if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => SortTrashMenu(
-                userid: widget.userid, usertipe: widget.usertipe)),
+          builder: (context) =>
+              SortTrashMenu(userid: widget.userid, usertipe: widget.usertipe),
+        ),
       );
     }
+  }
+
+  void _detailPesanan(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailPesanan(
+            userid: widget.userid,
+            usertipe: widget.usertipe,
+            selectedCategories: widget.selectedCategories,
+            currentAddress: currentAddress,
+            locationName: currentPlaceName,
+            latitude: latitude,
+            longitude: longitude,
+            detailLocation: _editController.text),
+      ),
+    );
   }
 
   @override
@@ -234,6 +258,33 @@ class _ChooseLocation extends State<ChooseLocation> {
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                        const SizedBox(height: 17),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 32,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // kirim data
+                              _detailPesanan(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 6, horizontal: 6),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              backgroundColor: const Color(0xFF1D7948),
+                            ),
+                            child: Text(
+                              'Konfirmasi',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ],

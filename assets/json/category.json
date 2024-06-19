@@ -3,12 +3,14 @@
     {
       "text": "Plastik",
       "src": "assets/img/plastic.png",
-      "color": "0xFF90CAF9"
+      "color": "0xFF90CAF9",
+      "price": 1500
     },
     {
       "text": "Organik",
       "src": "assets/img/organik.png",
-      "color": "0xFF80B118"
+      "color": "0xFF80B118",
+      "price": 500
     }
   ],
   [
@@ -17,14 +19,16 @@
       "src": "assets/img/minyakgoreng.png",
       "color": "0xFFFDD300",
       "width": 28,
-      "height": 88
+      "height": 88,
+      "price": 1000
     },
     {
       "text": "Kardus",
       "src": "assets/img/kardus.png",
       "color": "0xFFE47304",
       "width": 88,
-      "height": 61
+      "height": 61,
+      "price": 800
     }
   ],
   [
@@ -33,14 +37,16 @@
       "src": "assets/img/elektronik.png",
       "color": "0xFF8E8E8E",
       "width": 84,
-      "height": 84
+      "height": 84,
+      "price": 2000
     },
     {
       "text": "Pakaian",
       "src": "assets/img/pakaian.png",
       "color": "0xFF409B81",
       "width": 109,
-      "height": 76
+      "height": 76,
+      "price": 1500
     }
   ]
 ]
