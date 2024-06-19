@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tratour/Register.dart';
+import 'package:tratour/auth/Register.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
