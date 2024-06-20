@@ -4,13 +4,13 @@
       "text": "Plastik",
       "src": "assets/img/plastic.png",
       "color": "0xFF90CAF9",
-      "price": 1500
+      "price": 3500
     },
     {
       "text": "Organik",
       "src": "assets/img/organik.png",
       "color": "0xFF80B118",
-      "price": 500
+      "price": 2500
     }
   ],
   [
@@ -20,7 +20,7 @@
       "color": "0xFFFDD300",
       "width": 28,
       "height": 88,
-      "price": 1000
+      "price": 3000
     },
     {
       "text": "Kardus",
@@ -28,7 +28,7 @@
       "color": "0xFFE47304",
       "width": 88,
       "height": 61,
-      "price": 800
+      "price": 2800
     }
   ],
   [
@@ -38,7 +38,7 @@
       "color": "0xFF8E8E8E",
       "width": 84,
       "height": 84,
-      "price": 2000
+      "price": 5000
     },
     {
       "text": "Pakaian",
@@ -46,7 +46,7 @@
       "color": "0xFF409B81",
       "width": 109,
       "height": 76,
-      "price": 1500
+      "price": 3500
     }
   ]
 ]

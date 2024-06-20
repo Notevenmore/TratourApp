@@ -42,21 +42,24 @@ class _DetailPesanan extends State<DetailPesanan> {
   late Future<List<List<Category>>> categories;
   late List<int> amountCategories;
   List<int> priceCategories = [];
-  late int accumulation;
   final int adminPrice = 1000;
-  final int driverPrice = 50;
+  final int driverPrice = 5; //per meter
 
   @override
   void initState() {
     super.initState();
     categories = fetchCategoryFromJson();
-    amountCategories = List<int>.filled(widget.selectedCategories.length, 1);
+    amountCategories = List<int>.filled(widget.selectedCategories.length, 0);
   }
 
   int countAccumulation() {
     int num = 0;
-    for (int i = 0; i < amountCategories.length; i++) {
-      num = num + amountCategories[i] * priceCategories[i];
+    try {
+      for (int i = 0; i < amountCategories.length; i++) {
+        num = num + amountCategories[i] * priceCategories[i];
+      }
+    } catch (e) {
+      return 0;
     }
     return num;
   }
@@ -208,6 +211,7 @@ class _DetailPesanan extends State<DetailPesanan> {
                           }).toList();
 
                           priceCategories.clear();
+
                           return ListView.builder(
                             itemCount: filteredCategories.length,
                             itemBuilder: (context, index) {
