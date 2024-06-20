@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/template/navigation_bottom.dart';
@@ -83,6 +84,30 @@ class _DetailPesanan extends State<DetailPesanan> {
         ),
       );
     }
+  }
+
+  void _saveOrder(BuildContext context) async {
+    String detailLocation = '-';
+    if (widget.detailLocation != null) {
+      detailLocation = widget.detailLocation!;
+    }
+    FirebaseFirestore.instance.collection("pesanan").add({
+      "userid": widget.userid,
+      "usertipe": widget.usertipe,
+      "selectedCategories": widget.selectedCategories,
+      "amountCategories": amountCategories,
+      "latitude": widget.latitude,
+      "longitude": widget.longitude,
+      "detailLocation": detailLocation
+    }).then((DocumentReference doc) => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  homepage(userid: widget.userid, usertipe: widget.usertipe),
+            ),
+          )
+        });
   }
 
   // fetch data category
@@ -235,7 +260,7 @@ class _DetailPesanan extends State<DetailPesanan> {
                     _perkiraanPendapatan(
                         "Akumulasi Sampah", countAccumulation()),
                     _perkiraanPendapatan("Biaya Admin", -adminPrice),
-                    _perkiraanPendapatan("Biaya Driver", -driverPrice * 1000),
+                    _perkiraanPendapatan("Biaya Driver (/m)", -driverPrice),
                     Container(
                       width: double.infinity,
                       height: 2,
@@ -245,10 +270,9 @@ class _DetailPesanan extends State<DetailPesanan> {
                       ),
                     ),
                     _perkiraanPendapatan(
-                        "Total Pendapatan",
-                        countAccumulation() -
-                            adminPrice -
-                            (driverPrice * 1000)),
+                      "Total Pendapatan",
+                      countAccumulation() - adminPrice - driverPrice,
+                    ),
                   ],
                 ),
               ),
@@ -259,6 +283,7 @@ class _DetailPesanan extends State<DetailPesanan> {
                 child: ElevatedButton(
                   onPressed: () {
                     // kirim data
+                    _saveOrder(context);
                   },
                   style: ElevatedButton.styleFrom(
                     padding:
