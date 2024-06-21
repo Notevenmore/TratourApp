@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,6 +29,8 @@ class _LoginState extends State<Login> {
 
   void _signInWithGoogle(BuildContext context) async {
     final GoogleSignIn _googleSignIn = GoogleSignIn();
+    inspect(
+        "WKWKWKKWKKWKWKWKWKWKWKWKKWKW\nWKWKWWWKWKWWWKWKWKWWKK\nWKWKWKWWKWKWKWKWKW");
 
     try {
       // Sign in with Google
@@ -51,7 +56,6 @@ class _LoginState extends State<Login> {
         if (snapshot.docs.isNotEmpty) {
           final userData = snapshot.docs.first.data();
           userData['id'] = snapshot.docs.first.id;
-          print("WKWKWKKWKKWKW");
           print(snapshot.docs.first.id);
           // Navigate to homepage with user data
           homepage_redirect(context, userData['id'], userData['tipe']);

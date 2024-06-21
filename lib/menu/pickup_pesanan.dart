@@ -25,6 +25,7 @@ class PickupPesanan extends StatefulWidget {
 
 class _PickupPesananState extends State<PickupPesanan> {
   Map<String, dynamic> _order = {};
+  Map<String, dynamic> _userOrderData = {};
   LatLng? _currentPosition;
   Position? _position;
   int select = -1;
@@ -36,6 +37,15 @@ class _PickupPesananState extends State<PickupPesanan> {
     'Elektronik',
     'Pakaian',
   ];
+  late Future<void> _fetchDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDataFuture = fetchData();
+    // getCurrentPosition();
+    // getOrder();
+  }
 
   Future<void> getOrder() async {
     try {
@@ -57,46 +67,44 @@ class _PickupPesananState extends State<PickupPesanan> {
         ;
         _order = orders.firstWhere(
             (order) => order['selectedCategories'].contains(select));
-        print(_order);
       });
     } catch (e) {
       print('gagal ambil');
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Future<void> getCurrentPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+    try {
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        return Future.error('Location services are disabled.');
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return Future.error('Location permissions are denied');
+        }
+      }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium);
-    setState(() {
-      _position = position;
-      _currentPosition = LatLng(position.latitude, position.longitude);
-    });
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium);
+      setState(() {
+        _position = position;
+        _currentPosition = LatLng(position.latitude, position.longitude);
+      });
+    } catch (e) {
+      print("Error $e");
+    }
   }
 
   double degreeToRadian(double degree) {
@@ -115,7 +123,7 @@ class _PickupPesananState extends State<PickupPesanan> {
 
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
-    return 6378.0 * c;
+    return 6371.0 * c;
   }
 
   Future<void> fetchData() async {
@@ -126,30 +134,93 @@ class _PickupPesananState extends State<PickupPesanan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('DJFADJFAL'),
+      body: Container(
+        decoration: const BoxDecoration(color: Colors.white),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset("assets/img/PickUp Sweeper Notification 1.png"),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Ada Pesanan Untuk kamu nih!",
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color(0xFFD9D9D9),
+                  width: 0.5,
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 11),
+                    padding: const EdgeInsets.only(left: 21),
+                    child: Text(
+                      "${widget.selectedCategories} Pickup",
+                      style: GoogleFonts.ptSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  makeLine(),
+                  makeLine(),
+                ],
+              ),
+            ),
+            FutureBuilder(
+              future: _fetchDataFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  if (_position != null && _order != null) {
+                    double distance = calculateDistance(
+                      _position!.latitude,
+                      _position!.longitude,
+                      _order!['latitude'],
+                      _order!['longitude'],
+                    );
+                    return Center(child: Text("Distance: $distance km"));
+                  } else {
+                    return Center(child: Text("Unable to calculate distance"));
+                  }
+                }
+              },
+            ),
+          ],
+        ),
       ),
-      body: FutureBuilder(
-        future: fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            if (_position != null && _order != null) {
-              double distance = calculateDistance(
-                _position!.latitude,
-                _position!.longitude,
-                _order!['latitude'],
-                _order!['longitude'],
-              );
-              return Center(child: Text("Distance: $distance km"));
-            } else {
-              return Center(child: Text("Unable to calculate distance"));
-            }
-          }
-        },
+    );
+  }
+
+  Widget makeLine() {
+    return Container(
+      width: 320,
+      height: 2,
+      decoration: const BoxDecoration(
+        color: Color(0xFFD9D9D9),
       ),
     );
   }

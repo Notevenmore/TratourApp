@@ -25,6 +25,7 @@ class _homepageState extends State<homepage> {
   }
 
   void _onItemTapped(int index) {
+    print(index);
     if (index == 0) {
       Navigator.push(
         context,

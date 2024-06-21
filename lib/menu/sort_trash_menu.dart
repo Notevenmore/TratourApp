@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tratour/menu/choose_location.dart';
+import 'package:tratour/profile/home_profile.dart';
 
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
@@ -65,6 +66,12 @@ class _SortTrashMenu extends State<SortTrashMenu> {
             builder: (context) => SortTrashMenu(
                 userid: widget.userid, usertipe: widget.usertipe)),
       );
+    } else if (index == 4) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProfilPage(
+                  userid: widget.userid, usertipe: widget.usertipe)));
     }
   }
 

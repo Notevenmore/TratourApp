@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tratour/onboarding/Onboarding.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tratour/menu/homepage.dart';
@@ -67,11 +68,11 @@ class _ProfilPageState extends State<ProfilPage> {
     }
   }
 
-  void login() {
+  void onboarding() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Login(Tipe: widget.usertipe),
+        builder: (context) => Onboarding(),
       ),
     );
   }
@@ -94,7 +95,7 @@ class _ProfilPageState extends State<ProfilPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -105,7 +106,7 @@ class _ProfilPageState extends State<ProfilPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      radius: 40.0,
+                      radius: 30.0,
                       backgroundImage: AssetImage('assets/img/username.jpg'),
                     ),
                     SizedBox(width: 20.0),
@@ -298,7 +299,7 @@ class _ProfilPageState extends State<ProfilPage> {
                       'Keluar',
                       style: TextStyle(color: Colors.red),
                     ),
-                    onTap: () => login(),
+                    onTap: () => onboarding(),
                   ),
                 ],
               ),

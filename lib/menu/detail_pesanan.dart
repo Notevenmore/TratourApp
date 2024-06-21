@@ -8,6 +8,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:tratour/menu/sort_trash_menu.dart';
+import 'package:tratour/profile/home_profile.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
 import 'package:tratour/menu/homepage.dart';
@@ -83,6 +84,12 @@ class _DetailPesanan extends State<DetailPesanan> {
               SortTrashMenu(userid: widget.userid, usertipe: widget.usertipe),
         ),
       );
+    } else if (index == 4) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProfilPage(
+                  userid: widget.userid, usertipe: widget.usertipe)));
     }
   }
 
