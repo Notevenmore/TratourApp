@@ -7,11 +7,13 @@ class Category {
   final Color color;
   final int? width;
   final int? height;
+  final int? price;
 
   Category(
       {required this.text,
       required this.src,
       required this.color,
+      required this.price,
       this.width,
       this.height});
 
@@ -22,6 +24,7 @@ class Category {
       color: Color(int.parse(json['color'])),
       width: json['width'],
       height: json['height'],
+      price: json['price'],
     );
   }
 }
