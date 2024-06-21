@@ -19,7 +19,7 @@ class BarApp extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 ClipOval(
                   child: Image.asset(
-                    userdata['photo_profile'],
+                    "assets/img/username.jpg",
                     fit: BoxFit.cover,
                     width: 48,
                     height: 48,

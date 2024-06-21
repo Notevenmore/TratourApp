@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tratour/article/article_detail.dart';
 import 'package:tratour/template/bar_app.dart';
 import 'package:tratour/template/navigation_bottom.dart';
+import 'package:tratour/profile/home_profile.dart';
 
 class homepage extends StatefulWidget {
   final String userid;
@@ -37,6 +38,14 @@ class _homepageState extends State<homepage> {
             builder: (context) =>
                 homepage(userid: widget.userid, usertipe: widget.usertipe)),
       );
+    } else if (index == 4) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProfilPage(
+                    userid: widget.userid,
+                    usertipe: widget.usertipe,
+                  )));
     }
   }
 

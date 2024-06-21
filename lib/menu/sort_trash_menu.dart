@@ -6,7 +6,7 @@ import 'package:tratour/menu/choose_location.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
 import 'package:tratour/menu/homepage.dart';
-import 'package:tratour/model/sort_trash_data.dart';
+import 'package:tratour/models/sort_trash_data.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
