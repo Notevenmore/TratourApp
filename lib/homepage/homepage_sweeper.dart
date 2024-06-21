@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tratour/menu/pickup_pesanan.dart';
 
 class HomepageSweeper extends StatefulWidget {
   final String userid;
@@ -49,6 +49,19 @@ class _HomepageSweeperState extends State<HomepageSweeper> {
     super.initState();
   }
 
+  void moveToPickupPesanan(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PickupPesanan(
+          userid: widget.userid,
+          usertipe: widget.usertipe,
+          selectedCategories: selectedCategories,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,17 +93,8 @@ class _HomepageSweeperState extends State<HomepageSweeper> {
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(12)),
                   boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.25),
-                        blurRadius: 4,
-                        spreadRadius: 0,
-                        offset: const Offset(-2, -1)),
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.25),
-                      blurRadius: 4,
-                      spreadRadius: 0,
-                      offset: const Offset(0, 4),
-                    ),
+                    box(-2, -1),
+                    box(0, 4),
                   ],
                 ),
                 child: Column(
@@ -113,14 +117,8 @@ class _HomepageSweeperState extends State<HomepageSweeper> {
                                   size: 12,
                                   color: Color(0xFF6D6D6D),
                                 ),
-                                Text(
-                                  "Histori Pengambilan",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFF6D6D6D),
-                                  ),
-                                ),
+                                title("History Pengambilan", 10,
+                                    color: const Color(0xFF6D6D6D)),
                               ],
                             ),
                           ),
@@ -170,12 +168,7 @@ class _HomepageSweeperState extends State<HomepageSweeper> {
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(12)),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.25),
-                      blurRadius: 4,
-                      spreadRadius: 0,
-                      offset: const Offset(3, 4),
-                    ),
+                    box(3, 4),
                   ],
                 ),
                 child: Column(
@@ -198,7 +191,7 @@ class _HomepageSweeperState extends State<HomepageSweeper> {
                     ),
                     title(widget.userdata['name'], 16),
                     const SizedBox(height: 17),
-                    Container(
+                    SizedBox(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -245,7 +238,7 @@ class _HomepageSweeperState extends State<HomepageSweeper> {
               ),
               IconButton(
                 onPressed: () {
-                  print('Kirim');
+                  moveToPickupPesanan(context);
                 },
                 icon: Container(
                   alignment: Alignment.center,
@@ -256,13 +249,22 @@ class _HomepageSweeperState extends State<HomepageSweeper> {
                   width: 337.6,
                   height: 32,
                   child: title("Cari Pesanan Sekarang", 12,
-                      color: Color(0xFFFFFFFF)),
+                      color: const Color(0xFFFFFFFF)),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  BoxShadow box(double x, double y) {
+    return BoxShadow(
+      color: Colors.black.withOpacity(0.25),
+      blurRadius: 4,
+      spreadRadius: 0,
+      offset: Offset(x, y),
     );
   }
 

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "116999090862",
+    "project_id": "tratourapp",
+    "storage_bucket": "tratourapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116999090862:android:c2cad520368f645616f33f",
+        "android_client_info": {
+          "package_name": "com.example.tratour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "116999090862-ob38jagta0tdm1qq47u6rh08c5ia6vgf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tratour",
+            "certificate_hash": "bf51d4b83649bbb837d9956697c5ddfc954b323f"
+          }
+        },
+        {
+          "client_id": "116999090862-kg8lnru0n90u7sno6gi4nusu73j59evg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK22ZFHSqKT6kD24e3cBDT717u4HP6h-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "116999090862-kg8lnru0n90u7sno6gi4nusu73j59evg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "116999090862-qifqnfjsrvn2ln4bbt4fojopl8ahvhpl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tratour"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,7 +11,7 @@ import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
 import 'package:tratour/menu/homepage.dart';
-import '../model/sort_trash_data.dart';
+import 'package:tratour/models/sort_trash_data.dart';
 
 class DetailPesanan extends StatefulWidget {
   final String userid;
