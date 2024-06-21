@@ -65,12 +65,14 @@ class _LoginState extends State<Login> {
 
   void homepage_redirect(BuildContext context, String userid, String usertipe) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => homepage(
-                  userid: userid,
-                  usertipe: usertipe,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => homepage(
+          userid: userid,
+          usertipe: usertipe,
+        ),
+      ),
+    );
   }
 
   @override
