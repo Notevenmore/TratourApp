@@ -1,12 +1,11 @@
-import 'dart:convert';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:tratour/menu/homepage.dart';
 
 class PickupPesanan extends StatefulWidget {
   final String userid;
@@ -26,6 +25,8 @@ class PickupPesanan extends StatefulWidget {
 class _PickupPesananState extends State<PickupPesanan> {
   Map<String, dynamic> _order = {};
   Map<String, dynamic> _userOrderData = {};
+  String userLocation = "";
+  String sweeperLocation = "";
   LatLng? _currentPosition;
   Position? _position;
   int select = -1;
@@ -43,8 +44,52 @@ class _PickupPesananState extends State<PickupPesanan> {
   void initState() {
     super.initState();
     _fetchDataFuture = fetchData();
-    // getCurrentPosition();
-    // getOrder();
+  }
+
+  Future<String> _updateMarkerInfo(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        final Placemark place = placemarks[0];
+        return "${place.street}";
+      }
+    } catch (e) {
+      print('Error fetching placemark: $e');
+    }
+    return "";
+  }
+
+  Future<void> updateSweeperLocation() async {
+    String address =
+        await _updateMarkerInfo(_position!.latitude, _position!.longitude);
+    setState(() {
+      sweeperLocation = address;
+    });
+  }
+
+  Future<void> updateUserLocation() async {
+    String address =
+        await _updateMarkerInfo(_order['latitude'], _order['longitude']);
+    setState(() {
+      userLocation = address;
+    });
+  }
+
+  Future<void> getData() async {
+    try {
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection("warga")
+          .doc(_order['userid'])
+          .get();
+      if (doc.exists) {
+        setState(() {
+          _userOrderData = doc.data() as Map<String, dynamic>;
+        });
+      }
+    } catch (e) {
+      print("Error pengambilan data user: $e");
+    }
   }
 
   Future<void> getOrder() async {
@@ -129,6 +174,9 @@ class _PickupPesananState extends State<PickupPesanan> {
   Future<void> fetchData() async {
     await getCurrentPosition();
     await getOrder();
+    await getData();
+    await updateUserLocation();
+    await updateSweeperLocation();
   }
 
   @override
@@ -145,6 +193,7 @@ class _PickupPesananState extends State<PickupPesanan> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const SizedBox(height: 104),
                   Image.asset("assets/img/PickUp Sweeper Notification 1.png"),
                   const SizedBox(height: 16),
                   Text(
@@ -154,6 +203,7 @@ class _PickupPesananState extends State<PickupPesanan> {
                       fontSize: 14,
                     ),
                   ),
+                  const SizedBox(height: 80),
                 ],
               ),
             ),
@@ -183,34 +233,242 @@ class _PickupPesananState extends State<PickupPesanan> {
                     ),
                   ),
                   makeLine(),
+                  Container(
+                    width: 320,
+                    padding: const EdgeInsets.all(21),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FutureBuilder(
+                          future: _fetchDataFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else {
+                              if (_position != null && _order != null) {
+                                double distance = calculateDistance(
+                                  _position!.latitude,
+                                  _position!.longitude,
+                                  _order!['latitude'],
+                                  _order!['longitude'],
+                                );
+                                distance =
+                                    double.parse(distance.toStringAsFixed(2));
+                                return Text(
+                                  "$distance km",
+                                  style: GoogleFonts.ptSans(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15,
+                                  ),
+                                );
+                              } else {
+                                return Text("Unable to calculate distance");
+                              }
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              detailLocation(
+                                Color(0xFF1D7948),
+                                "Lokasi Kamu",
+                                sweeperLocation,
+                              ),
+                              for (int i = 1; i <= 7; i++) (circleMaker()),
+                              detailLocation(
+                                Color(0xFFFBBC05),
+                                "Lokasi Pickup",
+                                userLocation,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   makeLine(),
+                  FutureBuilder(
+                    future: _fetchDataFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 21, vertical: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: AssetImage(
+                                  _userOrderData['photo_profile'],
+                                ),
+                                radius: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Container(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _userOrderData['name'],
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    SizedBox(
+                                      width: 237,
+                                      child: Text(
+                                        _order['detailLocation'],
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 17),
+                                    Container(
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      homepage(
+                                                    userid: widget.userid,
+                                                    usertipe: widget.usertipe,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            icon: button(
+                                                const Color(0xFFEA4335),
+                                                "Tolak"),
+                                          ),
+                                          const SizedBox(width: 30),
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: button(
+                                                const Color(0xFF6FD73E),
+                                                "Terima"),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
-            FutureBuilder(
-              future: _fetchDataFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  if (_position != null && _order != null) {
-                    double distance = calculateDistance(
-                      _position!.latitude,
-                      _position!.longitude,
-                      _order!['latitude'],
-                      _order!['longitude'],
-                    );
-                    return Center(child: Text("Distance: $distance km"));
-                  } else {
-                    return Center(child: Text("Unable to calculate distance"));
-                  }
-                }
-              },
-            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget button(Color color, String text) {
+    return Container(
+      width: 87,
+      height: 32,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: const BorderRadius.all(Radius.circular(9)),
+      ),
+      child: Text(
+        text,
+        style: GoogleFonts.ptSans(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget circleMaker() {
+    return Container(
+      width: 6,
+      height: 6,
+      margin: const EdgeInsets.only(left: 11, bottom: 4),
+      decoration: const BoxDecoration(
+        color: Color(0xFFD9D9D9),
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  Widget detailLocation(
+    Color color,
+    String caption,
+    String desc,
+  ) {
+    return SizedBox(
+      child: Row(
+        children: [
+          logo(color),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                caption,
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 10,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                desc,
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget logo(Color colors) {
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+        color: colors,
+        shape: BoxShape.circle,
+      ),
+      child: const Icon(
+        Icons.location_on_outlined,
+        color: Colors.white,
+        size: 16,
       ),
     );
   }
