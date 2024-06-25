@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:tratour/menu/homepage.dart';
+import 'package:tratour/menu/tracking.dart';
 
 class PickupPesanan extends StatefulWidget {
   final String userid;
@@ -111,10 +113,27 @@ class _PickupPesananState extends State<PickupPesanan> {
         }
         ;
         _order = orders.firstWhere(
-            (order) => order['selectedCategories'].contains(select));
+          (order) =>
+              order['selectedCategories'].contains(select) &&
+              order['status_pengiriman'] == false,
+        );
       });
     } catch (e) {
       print('gagal ambil');
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            content:
+                Text("Pesanan tidak tersedia, harap tunggu beberapa saat lagi"),
+          );
+        },
+      );
+      Timer(const Duration(seconds: 2), () {
+        Navigator.of(context).pop(); // Close the popup
+        Navigator.of(context).pop(); // go to previous page
+      });
     }
   }
 
@@ -177,6 +196,32 @@ class _PickupPesananState extends State<PickupPesanan> {
     await getData();
     await updateUserLocation();
     await updateSweeperLocation();
+  }
+
+  void tracking(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Tracking(
+          userid: widget.userid,
+          usertipe: widget.usertipe,
+          userOrderData: _userOrderData,
+          order: _order,
+        ),
+      ),
+    );
+  }
+
+  void redirect_homepage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => homepage(
+          userid: widget.userid,
+          usertipe: widget.usertipe,
+        ),
+      ),
+    );
   }
 
   @override
@@ -347,27 +392,22 @@ class _PickupPesananState extends State<PickupPesanan> {
                                         children: [
                                           IconButton(
                                             onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      homepage(
-                                                    userid: widget.userid,
-                                                    usertipe: widget.usertipe,
-                                                  ),
-                                                ),
-                                              );
+                                              redirect_homepage(context);
                                             },
                                             icon: button(
-                                                const Color(0xFFEA4335),
-                                                "Tolak"),
+                                              const Color(0xFFEA4335),
+                                              "Tolak",
+                                            ),
                                           ),
                                           const SizedBox(width: 30),
                                           IconButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              tracking(context);
+                                            },
                                             icon: button(
-                                                const Color(0xFF6FD73E),
-                                                "Terima"),
+                                              const Color(0xFF6FD73E),
+                                              "Terima",
+                                            ),
                                           ),
                                         ],
                                       ),

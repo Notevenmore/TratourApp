@@ -3,8 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'home_profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   final String userId;
@@ -143,7 +141,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Profile updated successfully')));
+            const SnackBar(content: Text('Profile updated successfully')));
 
         Navigator.pushReplacement(
             context,
@@ -152,8 +150,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     userid: widget.userId, usertipe: widget.userTipe)));
       } catch (e) {
         print('Error updating profile: $e');
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Failed to update profile')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to update profile')));
       }
     }
   }
@@ -162,7 +160,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update Profile'),
+        title: const Text('Update Profile'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -177,14 +175,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                       radius: 50.0,
                       backgroundImage: _image != null
                           ? FileImage(_image!)
-                          : AssetImage('assets/img/username.jpg')
+                          : const AssetImage('assets/img/username.jpg')
                               as ImageProvider,
                     ),
                     Positioned(
                       bottom: 0,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.camera_alt),
+                        icon: const Icon(Icons.camera_alt),
                         onPressed: _pickImage,
                       ),
                     ),
@@ -193,26 +191,26 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               ),
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter your name' : null,
               ),
               TextFormField(
                 controller: _addressController,
-                decoration: InputDecoration(labelText: 'Address'),
+                decoration: const InputDecoration(labelText: 'Address'),
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter your address' : null,
               ),
               TextFormField(
                 controller: _phoneController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
+                decoration: const InputDecoration(labelText: 'Phone Number'),
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter your phone number' : null,
               ),
               DropdownButtonFormField<String>(
                 value: _selectedProvince,
-                decoration: InputDecoration(labelText: 'Province'),
+                decoration: const InputDecoration(labelText: 'Province'),
                 items: _provinces.map((String province) {
                   return DropdownMenuItem<String>(
                     value: province,
@@ -229,33 +227,33 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               ),
               TextFormField(
                 controller: _cityController,
-                decoration: InputDecoration(labelText: 'City'),
+                decoration: const InputDecoration(labelText: 'City'),
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter your city' : null,
               ),
               TextFormField(
                 controller: _districtController,
-                decoration: InputDecoration(labelText: 'District'),
+                decoration: const InputDecoration(labelText: 'District'),
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter your district' : null,
               ),
               TextFormField(
                 controller: _villageController,
-                decoration: InputDecoration(labelText: 'Village'),
+                decoration: const InputDecoration(labelText: 'Village'),
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter your village' : null,
               ),
               TextFormField(
                 controller: _postalCodeController,
-                decoration: InputDecoration(labelText: 'Postal Code'),
+                decoration: const InputDecoration(labelText: 'Postal Code'),
                 keyboardType: TextInputType.number,
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter your postal code' : null,
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () => _updateProfile(context),
-                child: Text('Update Profile'),
+                child: const Text('Update Profile'),
               ),
             ],
           ),

@@ -32,7 +32,7 @@ class _RegisterState extends State<Register> {
         _telnumberController.text.isEmpty ||
         _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Semua field harus diisi')),
+        const SnackBar(content: Text('Semua field harus diisi')),
       );
       return;
     }

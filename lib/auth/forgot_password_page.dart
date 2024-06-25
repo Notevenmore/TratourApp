@@ -18,7 +18,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Future<void> _resetPassword() async {
     if (_newPasswordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Passwords do not match')),
+        const SnackBar(content: Text('Passwords do not match')),
       );
       return;
     }
@@ -48,14 +48,14 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             .update({'password': encryptedPassword});
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text(
                   'Password reset email sent and password updated in Firestore')),
         );
         Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Email not found in Firestore')),
+          const SnackBar(content: Text('Email not found in Firestore')),
         );
       }
     } catch (e) {
@@ -77,7 +77,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reset Password'),
+        title: const Text('Reset Password'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -87,30 +87,30 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
               ),
             ),
             TextField(
               controller: _newPasswordController,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'New Password',
               ),
             ),
             TextField(
               controller: _confirmPasswordController,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Confirm New Password',
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _isLoading
-                ? CircularProgressIndicator()
+                ? const CircularProgressIndicator()
                 : ElevatedButton(
                     onPressed: _resetPassword,
-                    child: Text('Reset Password'),
+                    child: const Text('Reset Password'),
                   ),
           ],
         ),

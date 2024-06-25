@@ -111,7 +111,7 @@ class _LoginState extends State<Login> {
   void loginUser(BuildContext context) async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Email dan password tidak boleh kosong')),
+        const SnackBar(content: Text('Email dan password tidak boleh kosong')),
       );
       return;
     }
@@ -138,7 +138,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       print("Failed to add document: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal memuat data pengguna')),
+        const SnackBar(content: Text('Gagal memuat data pengguna')),
       );
     } finally {
       setState(() {
@@ -176,11 +176,11 @@ class _LoginState extends State<Login> {
 
     if (!userFound) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Email tidak ditemukan')),
+        const SnackBar(content: Text('Email tidak ditemukan')),
       );
     } else if (!passwordCorrect) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password salah')),
+        const SnackBar(content: Text('Password salah')),
       );
     }
   }
@@ -238,7 +238,7 @@ class _LoginState extends State<Login> {
                               builder: (context) => ResetPasswordPage()),
                         );
                       },
-                      child: Text('Lupa password? klik disini'),
+                      child: const Text('Lupa password? klik disini'),
                     ),
                     const SizedBox(height: 48),
                     Padding(
@@ -283,29 +283,22 @@ class _LoginState extends State<Login> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                            backgroundColor:
+                                const Color.fromARGB(255, 255, 255, 255),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Image.asset('assets/img/google.png',
                                   height: 24, width: 24),
-                              SizedBox(width: 12),
-                              Text(
+                              const SizedBox(width: 12),
+                              const Text(
                                 "Sign in With Google",
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 16),
                               )
                             ],
                           ),
-                          // child: Text(
-                          //   'Log In',
-                          //   style: GoogleFonts.plusJakartaSans(
-                          //     fontSize: 14,
-                          //     fontWeight: FontWeight.w700,
-                          //     color: Colors.white,
-                          //   ),
-                          // ),
                         ),
                       ),
                     ),

@@ -105,7 +105,8 @@ class _DetailPesanan extends State<DetailPesanan> {
       "amountCategories": amountCategories,
       "latitude": widget.latitude,
       "longitude": widget.longitude,
-      "detailLocation": detailLocation
+      "detailLocation": detailLocation,
+      "status_pengiriman": false,
     }).then((DocumentReference doc) => {
           Navigator.push(
             context,

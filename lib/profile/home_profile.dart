@@ -3,7 +3,6 @@ import 'package:tratour/onboarding/Onboarding.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tratour/menu/homepage.dart';
-import 'package:tratour/auth/Login.dart';
 import 'edit_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -72,7 +71,7 @@ class _ProfilPageState extends State<ProfilPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Onboarding(),
+        builder: (context) => const Onboarding(),
       ),
     );
   }
@@ -91,7 +90,7 @@ class _ProfilPageState extends State<ProfilPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profil Saya'),
+        title: const Text('Profil Saya'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -105,44 +104,44 @@ class _ProfilPageState extends State<ProfilPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 30.0,
                       backgroundImage: AssetImage('assets/img/username.jpg'),
                     ),
-                    SizedBox(width: 20.0),
+                    const SizedBox(width: 20.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Nama pengguna
                         Text(
                           "${_userdata['name']}",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 9.0),
+                        const SizedBox(height: 9.0),
                         // Email pengguna
                         Text(
                           "${_userdata['email']}",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(width: 40.0),
+                    const SizedBox(width: 40.0),
                     IconButton(
-                      icon: Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       onPressed: () => EditProfile(),
-                      color: Color.fromARGB(255, 0, 0, 0),
+                      color: const Color.fromARGB(255, 0, 0, 0),
                     ),
                   ],
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.only(left: 15, top: 20),
+              const Padding(
+                padding: EdgeInsets.only(left: 15, top: 20),
                 child: Row(
                   children: [
                     Text(
@@ -170,12 +169,13 @@ class _ProfilPageState extends State<ProfilPage> {
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 7,
-                            offset: Offset(0, 3), // changes position of shadow
+                            offset: const Offset(
+                                0, 3), // changes position of shadow
                           ),
                         ],
                       ),
                       padding: const EdgeInsets.all(20.0),
-                      child: Column(
+                      child: const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Center(
@@ -214,24 +214,25 @@ class _ProfilPageState extends State<ProfilPage> {
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 7,
-                            offset: Offset(0, 3), // changes position of shadow
+                            offset: const Offset(
+                                0, 3), // changes position of shadow
                           ),
                         ],
                       ),
-                      padding: EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Center(
                             child: Text(
                               "${_userdata['poin']}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          Center(
+                          const Center(
                             child: Text(
                               'Poin',
                               style: TextStyle(
@@ -240,7 +241,7 @@ class _ProfilPageState extends State<ProfilPage> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 5.0),
+                          const SizedBox(height: 5.0),
                         ],
                       ),
                     ),
@@ -248,15 +249,15 @@ class _ProfilPageState extends State<ProfilPage> {
                 ],
               ),
 
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
               // Divider
-              Divider(
+              const Divider(
                 height: 1.0,
               ),
-              SizedBox(height: 30.0),
-              Padding(
-                padding: const EdgeInsets.only(left: 15),
+              const SizedBox(height: 30.0),
+              const Padding(
+                padding: EdgeInsets.only(left: 15),
                 child: Row(
                   children: [
                     Text(
@@ -273,29 +274,29 @@ class _ProfilPageState extends State<ProfilPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
-                    leading: Icon(Icons.notifications),
-                    title: Text('Notifikasi'),
-                    trailing: Icon(Icons.chevron_right),
+                    leading: const Icon(Icons.notifications),
+                    title: const Text('Notifikasi'),
+                    trailing: const Icon(Icons.chevron_right),
                     onTap: () {},
                   ),
                   ListTile(
-                    leading: Icon(Icons.help),
-                    title: Text('Bantuan'),
-                    trailing: Icon(Icons.chevron_right),
+                    leading: const Icon(Icons.help),
+                    title: const Text('Bantuan'),
+                    trailing: const Icon(Icons.chevron_right),
                     onTap: () {},
                   ),
                   ListTile(
-                    leading: Icon(Icons.star),
-                    title: Text('Beri Rating Aplikasi'),
-                    trailing: Icon(Icons.chevron_right),
+                    leading: const Icon(Icons.star),
+                    title: const Text('Beri Rating Aplikasi'),
+                    trailing: const Icon(Icons.chevron_right),
                     onTap: () {},
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.logout,
                       color: Colors.red,
                     ),
-                    title: Text(
+                    title: const Text(
                       'Keluar',
                       style: TextStyle(color: Colors.red),
                     ),
@@ -315,153 +316,4 @@ class _ProfilPageState extends State<ProfilPage> {
       ),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: Text('Profil Saya'),
-  //     ),
-  //     body: SingleChildScrollView(
-  //       child: Padding(
-  //         padding: const EdgeInsets.all(20.0),
-  //         child: Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             // Foto profil
-  //             Padding(
-  //               padding: const EdgeInsets.only(bottom: 20.0),
-  //               child: Row(
-  //                 children: [
-  //                   CircleAvatar(
-  //                     radius: 40.0,
-  //                     backgroundImage: AssetImage('assets/img/username.jpg'),
-  //                   ),
-  //                   SizedBox(width: 20.0),
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       // Nama pengguna
-  //                       Text(
-  //                         'Rakesh Bramantyo',
-  //                         style: TextStyle(
-  //                           fontSize: 20.0,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                       SizedBox(height: 9.0),
-  //                       // Email pengguna
-  //                       Text(
-  //                         'kesh123@gmail.com',
-  //                         style: TextStyle(
-  //                           fontSize: 16.0,
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   SizedBox(width: 40.0),
-  //                   FaIcon(
-  //                     FontAwesomeIcons.penToSquare,
-  //                     color: Color(0xFF6D6D6D),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-
-  //             // Poin dan kode referral
-  //             Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               children: [
-  //                 Column(
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Text(
-  //                       'Poin',
-  //                       style: TextStyle(
-  //                         fontSize: 16.0,
-  //                         fontWeight: FontWeight.bold,
-  //                       ),
-  //                     ),
-  //                     SizedBox(height: 5.0),
-  //                     Text(
-  //                       '10000',
-  //                       style: TextStyle(
-  //                         fontSize: 20.0,
-  //                         fontWeight: FontWeight.bold,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //                 Column(
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Text(
-  //                       'Kode Referral',
-  //                       style: TextStyle(
-  //                         fontSize: 16.0,
-  //                         fontWeight: FontWeight.bold,
-  //                       ),
-  //                     ),
-  //                     SizedBox(height: 5.0),
-  //                     Text(
-  //                       'Kesh23',
-  //                       style: TextStyle(
-  //                         fontSize: 20.0,
-  //                         fontWeight: FontWeight.bold,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ],
-  //             ),
-  //             SizedBox(height: 20.0),
-
-  //             // Divider
-  //             Divider(
-  //               height: 1.0,
-  //             ),
-  //             SizedBox(height: 20.0),
-
-  //             // Pengaturan
-  //             Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 ListTile(
-  //                   leading: Icon(Icons.notifications),
-  //                   title: Text('Notifikasi'),
-  //                   trailing: Icon(Icons.chevron_right),
-  //                   onTap: () {},
-  //                 ),
-  //                 ListTile(
-  //                   leading: Icon(Icons.help),
-  //                   title: Text('Bantuan'),
-  //                   trailing: Icon(Icons.chevron_right),
-  //                   onTap: () {},
-  //                 ),
-  //                 ListTile(
-  //                   leading: Icon(Icons.star),
-  //                   title: Text('Beri Rating Aplikasi'),
-  //                   trailing: Icon(Icons.chevron_right),
-  //                   onTap: () {},
-  //                 ),
-  //                 ListTile(
-  //                   leading: Icon(Icons.logout),
-  //                   title: Text('Keluar'),
-  //                   trailing: Icon(Icons.chevron_right),
-  //                   onTap: () {},
-  //                 ),
-  //               ],
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //     bottomNavigationBar: NavigationBottom(
-  //       selectedIndex: selectedIndex,
-  //       userid: widget.userid,
-  //       usertipe: widget.usertipe,
-  //       onItemTapped: _onItemTapped,
-  //     ),
-  //   );
-  // }
 }
