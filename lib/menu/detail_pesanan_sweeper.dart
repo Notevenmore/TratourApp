@@ -5,44 +5,41 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/profile/home_profile.dart';
-import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
 import 'package:tratour/menu/homepage.dart';
 import 'package:tratour/models/sort_trash_data.dart';
 
-class DetailPesanan extends StatefulWidget {
+class DetailPesananSweeper extends StatefulWidget {
   final String userid;
   final String usertipe;
-  final Set<int> selectedCategories;
+  final List<dynamic> selectedCategories;
   final String currentAddress;
   final String locationName;
-  final double latitude;
-  final double longitude;
-  final String? detailLocation;
+  final List<int> amountCategories;
+  final double sweeperPrice;
+  final double accumulation;
 
-  const DetailPesanan({
+  const DetailPesananSweeper({
     super.key,
     required this.userid,
     required this.usertipe,
     required this.selectedCategories,
     required this.currentAddress,
     required this.locationName,
-    required this.latitude,
-    required this.longitude,
-    this.detailLocation,
+    required this.amountCategories,
+    required this.sweeperPrice,
+    required this.accumulation,
   });
 
   @override
-  _DetailPesanan createState() => _DetailPesanan();
+  _DetailPesananSweeper createState() => _DetailPesananSweeper();
 }
 
-class _DetailPesanan extends State<DetailPesanan> {
+class _DetailPesananSweeper extends State<DetailPesananSweeper> {
   late Future<List<List<Category>>> categories;
-  late List<int> amountCategories;
   List<int> priceCategories = [];
   final int adminPrice = 1000;
   final int driverPrice = 5; //per meter
@@ -51,14 +48,13 @@ class _DetailPesanan extends State<DetailPesanan> {
   void initState() {
     super.initState();
     categories = fetchCategoryFromJson();
-    amountCategories = List<int>.filled(widget.selectedCategories.length, 0);
   }
 
   int countAccumulation() {
     int num = 0;
     try {
-      for (int i = 0; i < amountCategories.length; i++) {
-        num = num + amountCategories[i] * priceCategories[i];
+      for (int i = 0; i < widget.amountCategories.length; i++) {
+        num = num + widget.amountCategories[i] * priceCategories[i];
       }
     } catch (e) {
       return 0;
@@ -93,33 +89,6 @@ class _DetailPesanan extends State<DetailPesanan> {
     }
   }
 
-  void _saveOrder(BuildContext context) async {
-    String detailLocation = '-';
-    if (widget.detailLocation != null) {
-      detailLocation = widget.detailLocation!;
-    }
-    FirebaseFirestore.instance.collection("pesanan").add({
-      "userid": widget.userid,
-      "usertipe": widget.usertipe,
-      "selectedCategories": widget.selectedCategories,
-      "amountCategories": amountCategories,
-      "latitude": widget.latitude,
-      "longitude": widget.longitude,
-      "detailLocation": detailLocation,
-      "status_pengiriman": false,
-      "status_penjemputan": false,
-      "sweeper_id": "",
-    }).then((DocumentReference doc) => {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  homepage(userid: widget.userid, usertipe: widget.usertipe),
-            ),
-          )
-        });
-  }
-
   // fetch data category
   Future<List<List<Category>>> fetchCategoryFromJson() async {
     try {
@@ -135,10 +104,24 @@ class _DetailPesanan extends State<DetailPesanan> {
     }
   }
 
+  void redirect_homepage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => homepage(
+          userid: widget.userid,
+          usertipe: widget.usertipe,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BarAppSecondversion(title: "Detail Pesanan"),
+      appBar: const BarAppSecondversion(
+        title: "Detail Pesanan",
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(left: 20, right: 20),
@@ -149,11 +132,11 @@ class _DetailPesanan extends State<DetailPesanan> {
             children: [
               _title("Detail Pengambilan"),
               const SizedBox(height: 7),
-              SizedBox(
+              Container(
                 width: double.infinity,
                 height: 98,
                 child: Container(
-                  padding: const EdgeInsets.only(left: 4, right: 16, top: 7),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -214,7 +197,8 @@ class _DetailPesanan extends State<DetailPesanan> {
                         9 * (1 + widget.selectedCategories.length))
                     .toDouble(),
                 child: Container(
-                  padding: const EdgeInsets.only(left: 9, right: 9, top: 9),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -227,7 +211,7 @@ class _DetailPesanan extends State<DetailPesanan> {
                       ),
                     ],
                   ),
-                  child: SizedBox(
+                  child: Container(
                     child: FutureBuilder<List<List<Category>>>(
                       future: categories,
                       builder: (context, snapshot) {
@@ -268,9 +252,10 @@ class _DetailPesanan extends State<DetailPesanan> {
                 child: Column(
                   children: [
                     _perkiraanPendapatan(
-                        "Akumulasi Sampah", countAccumulation()),
-                    _perkiraanPendapatan("Biaya Admin", -adminPrice),
-                    _perkiraanPendapatan("Biaya Driver (/m)", -driverPrice),
+                        "Akumulasi Sampah", widget.accumulation.toInt()),
+                    _perkiraanPendapatan("Biaya Admin", adminPrice),
+                    _perkiraanPendapatan(
+                        "Biaya Driver (/m)", -widget.sweeperPrice.toInt()),
                     Container(
                       width: double.infinity,
                       height: 2,
@@ -281,7 +266,7 @@ class _DetailPesanan extends State<DetailPesanan> {
                     ),
                     _perkiraanPendapatan(
                       "Total Pendapatan",
-                      countAccumulation() - adminPrice - driverPrice,
+                      widget.sweeperPrice.toInt(),
                     ),
                   ],
                 ),
@@ -293,7 +278,7 @@ class _DetailPesanan extends State<DetailPesanan> {
                 child: ElevatedButton(
                   onPressed: () {
                     // kirim data
-                    _saveOrder(context);
+                    redirect_homepage(context);
                   },
                   style: ElevatedButton.styleFrom(
                     padding:
@@ -304,7 +289,7 @@ class _DetailPesanan extends State<DetailPesanan> {
                     backgroundColor: const Color(0xFF1D7948),
                   ),
                   child: Text(
-                    'Cari Sweeper',
+                    'Cari Pesanan baru',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -317,12 +302,6 @@ class _DetailPesanan extends State<DetailPesanan> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: NavigationBottom(
-        selectedIndex: 2,
-        userid: widget.userid,
-        usertipe: widget.usertipe,
-        onItemTapped: _onItemTapped,
       ),
     );
   }
@@ -415,36 +394,16 @@ class _DetailPesanan extends State<DetailPesanan> {
               ],
             ),
           ),
-          const SizedBox(width: 16),
           SizedBox(
-            width: 149,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  onPressed: () {
-                    if (amountCategories[index] > 0) {
-                      setState(() {
-                        amountCategories[index]--;
-                      });
-                    }
-                  },
-                  icon: _makeCircle("-"),
-                ),
                 Text(
-                  "${amountCategories[index]} Kg",
+                  "${widget.amountCategories[index]} Kg",
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w600,
                     fontSize: 10,
                   ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      amountCategories[index]++;
-                    });
-                  },
-                  icon: _makeCircle("+"),
                 ),
               ],
             ),

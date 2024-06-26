@@ -18,7 +18,7 @@ class ProfilPage extends StatefulWidget {
 
 class _ProfilPageState extends State<ProfilPage> {
   late Map<String, dynamic> _userdata = {};
-  bool _isLoading = true;
+  // bool _isLoading = true;
   int selectedIndex = 4;
 
   @override
@@ -53,18 +53,9 @@ class _ProfilPageState extends State<ProfilPage> {
       if (doc.exists) {
         setState(() {
           _userdata = doc.data() as Map<String, dynamic>;
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _isLoading = false;
         });
       }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    } catch (e) {}
   }
 
   void onboarding() {

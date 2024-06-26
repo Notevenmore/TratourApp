@@ -14,11 +14,12 @@ class PickupPesanan extends StatefulWidget {
   final String usertipe;
   final String selectedCategories;
 
-  const PickupPesanan(
-      {super.key,
-      required this.userid,
-      required this.usertipe,
-      required this.selectedCategories});
+  const PickupPesanan({
+    super.key,
+    required this.userid,
+    required this.usertipe,
+    required this.selectedCategories,
+  });
 
   @override
   _PickupPesananState createState() => _PickupPesananState();
@@ -115,7 +116,7 @@ class _PickupPesananState extends State<PickupPesanan> {
         _order = orders.firstWhere(
           (order) =>
               order['selectedCategories'].contains(select) &&
-              order['status_pengiriman'] == false,
+              order['status_penjemputan'] == false,
         );
       });
     } catch (e) {
@@ -199,6 +200,15 @@ class _PickupPesananState extends State<PickupPesanan> {
   }
 
   void tracking(BuildContext context) {
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.update(
+        FirebaseFirestore.instance.collection("pesanan").doc(_order['id']),
+        {
+          "status_penjemputan": true,
+          "sweeper_id": widget.userid,
+        },
+      );
+    });
     double distance = calculateDistance(
       _position!.latitude,
       _position!.longitude,
@@ -312,7 +322,7 @@ class _PickupPesananState extends State<PickupPesanan> {
                                   _order!['longitude'],
                                 );
                                 distance =
-                                    double.parse(distance.toStringAsFixed(2));
+                                    double.parse(distance.toStringAsFixed(3));
                                 return Text(
                                   "$distance km",
                                   style: GoogleFonts.ptSans(

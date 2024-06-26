@@ -8,11 +8,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:tratour/menu/detail_pesanan_sweeper.dart';
 
-import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/models/sort_trash_data.dart';
-import 'package:tratour/profile/home_profile.dart';
-import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
 import 'package:tratour/menu/homepage.dart';
 
@@ -120,16 +118,28 @@ class _Tracking extends State<Tracking> {
         ),
       );
     });
-    // await _updateMarkerInfo(_currentPosition!);
+    await _updateMarkerInfo(_currentPosition!);
   }
 
   @override
   void initState() {
     super.initState();
     _determinePosition();
+    print("Address: $currentAddress");
   }
 
   void redirect_homepage(BuildContext context) {
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.update(
+        FirebaseFirestore.instance
+            .collection("pesanan")
+            .doc(widget.order['id']),
+        {
+          "status_penjemputan": false,
+          "sweeper_id": "",
+        },
+      );
+    });
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -157,6 +167,8 @@ class _Tracking extends State<Tracking> {
   }
 
   void checkValidLocation() {
+    double sweeper_price = 0;
+    double customer_price = 0;
     if (double.parse((_currentPosition!.longitude).toStringAsFixed(2)) ==
             double.parse((widget.order['longitude']).toStringAsFixed(2)) &&
         double.parse((_currentPosition!.latitude).toStringAsFixed(2)) ==
@@ -186,15 +198,16 @@ class _Tracking extends State<Tracking> {
           );
           double customer_poin = customer.get("poin").toDouble();
           double sweeper_poin = sweeper.get("poin").toDouble();
+          int iteration = 0;
           widget.order['selectedCategories'].forEach((index) {
-            customer_poin +=
-                (category[widget.order['selectedCategories'][index] ~/ 2]
-                            [widget.order['selectedCategories'][index] % 2]
-                        .price! *
-                    widget.order['amountCategories'][index]);
+            customer_price += (category[index ~/ 2][index % 2].price! *
+                widget.order['amountCategories'][iteration]);
+            customer_poin += customer_price;
+            iteration++;
           });
-          sweeper_poin += (widget.distance * 5);
-          customer_poin -= (widget.distance * 5);
+          sweeper_price = widget.distance * 5;
+          sweeper_poin += sweeper_price;
+          customer_poin -= sweeper_price;
           customer_poin -= 1000;
           transaction.update(
             FirebaseFirestore.instance
@@ -218,7 +231,11 @@ class _Tracking extends State<Tracking> {
             },
           );
         }).then(
-          (value) => redirect_homepage(context),
+          (value) => redirect_detailpesanan(
+            context,
+            sweeper_price,
+            customer_price,
+          ),
           onError: (e) =>
               print("Error saat melakukan pembaruan status pengiriman: $e"),
         );
@@ -241,6 +258,33 @@ class _Tracking extends State<Tracking> {
         //     context, '/next'); // Navigate to next page
       });
     }
+  }
+
+  void redirect_detailpesanan(
+      BuildContext context, double sweeperPrice, double customerPrice) {
+    List<int> amountCategories = [];
+    try {
+      widget.order['amountCategories'].forEach((e) {
+        amountCategories.add(e.toInt());
+      });
+    } catch (e) {
+      print("Error konversi data: $e");
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailPesananSweeper(
+          userid: widget.userid,
+          usertipe: widget.usertipe,
+          selectedCategories: widget.order['selectedCategories'],
+          currentAddress: currentAddress,
+          locationName: currentPlaceName,
+          amountCategories: amountCategories,
+          sweeperPrice: sweeperPrice,
+          accumulation: customerPrice,
+        ),
+      ),
+    );
   }
 
   Widget popup(IconData icon, Color color, String text) {
@@ -286,7 +330,7 @@ class _Tracking extends State<Tracking> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const BarAppSecondversion(title: "Tentukan Lokasi Pengambilan"),
-      body: _currentPosition == null
+      body: _currentPosition == null && currentAddress == ""
           ? const Center(
               child: CircularProgressIndicator(),
             )
