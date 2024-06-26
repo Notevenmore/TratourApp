@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:tratour/menu/sort_trash_menu.dart';
+import 'package:tratour/models/sort_trash_data.dart';
 import 'package:tratour/profile/home_profile.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
@@ -17,6 +21,7 @@ class Tracking extends StatefulWidget {
   final String usertipe;
   final Map<String, dynamic> order;
   final Map<String, dynamic> userOrderData;
+  final double distance;
 
   const Tracking({
     super.key,
@@ -24,6 +29,7 @@ class Tracking extends StatefulWidget {
     required this.usertipe,
     required this.order,
     required this.userOrderData,
+    required this.distance,
   });
 
   @override
@@ -123,33 +129,6 @@ class _Tracking extends State<Tracking> {
     _determinePosition();
   }
 
-  // aksi ketika tombol navigationbottom diklik
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              homepage(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SortTrashMenu(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                  userid: widget.userid, usertipe: widget.usertipe)));
-    }
-  }
-
   void redirect_homepage(BuildContext context) {
     Navigator.push(
       context,
@@ -160,6 +139,21 @@ class _Tracking extends State<Tracking> {
         ),
       ),
     );
+  }
+
+  // fetch data category
+  Future<List<List<Category>>> fetchCategoryFromJson() async {
+    try {
+      final String response =
+          await rootBundle.loadString('assets/json/category.json');
+      final List<dynamic> data = jsonDecode(response);
+      return data.map((row) {
+        return (row as List).map((item) => Category.fromJson(item)).toList();
+      }).toList();
+    } catch (e) {
+      print(e);
+      return [];
+    }
   }
 
   void checkValidLocation() {
@@ -178,9 +172,57 @@ class _Tracking extends State<Tracking> {
         },
       );
       Timer(const Duration(seconds: 2), () {
-        Navigator.of(context).pop(); // Close the popup
-        // Navigator.pushReplacementNamed(
-        //     context, '/next'); // Navigate to next page
+        FirebaseFirestore.instance.runTransaction((transaction) async {
+          final category = await fetchCategoryFromJson();
+          DocumentSnapshot customer = await transaction.get(
+            FirebaseFirestore.instance.collection("warga").doc(
+                  widget.order['userid'],
+                ),
+          );
+          DocumentSnapshot sweeper = await transaction.get(
+            FirebaseFirestore.instance.collection("sweeper").doc(
+                  widget.userid,
+                ),
+          );
+          double customer_poin = customer.get("poin").toDouble();
+          double sweeper_poin = sweeper.get("poin").toDouble();
+          widget.order['selectedCategories'].forEach((index) {
+            customer_poin +=
+                (category[widget.order['selectedCategories'][index] ~/ 2]
+                            [widget.order['selectedCategories'][index] % 2]
+                        .price! *
+                    widget.order['amountCategories'][index]);
+          });
+          sweeper_poin += (widget.distance * 5);
+          customer_poin -= (widget.distance * 5);
+          customer_poin -= 1000;
+          transaction.update(
+            FirebaseFirestore.instance
+                .collection("warga")
+                .doc(widget.order['userid']),
+            {"poin": customer_poin},
+          );
+          transaction.update(
+            FirebaseFirestore.instance.collection("sweeper").doc(widget.userid),
+            {"poin": sweeper_poin},
+          );
+          transaction.update(
+            FirebaseFirestore.instance
+                .collection("pesanan")
+                .doc(widget.order['id']),
+            {
+              "status_pengiriman": true,
+              "distance": widget.distance,
+              "user_poin": customer_poin,
+              "sweeper_poin": sweeper_poin,
+            },
+          );
+        }).then(
+          (value) => redirect_homepage(context),
+          onError: (e) =>
+              print("Error saat melakukan pembaruan status pengiriman: $e"),
+        );
+        // Navigator.of(context).pop(); // Close the popup
       });
     } else {
       showDialog(

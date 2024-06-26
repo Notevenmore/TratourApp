@@ -199,6 +199,13 @@ class _PickupPesananState extends State<PickupPesanan> {
   }
 
   void tracking(BuildContext context) {
+    double distance = calculateDistance(
+      _position!.latitude,
+      _position!.longitude,
+      _order!['latitude'],
+      _order!['longitude'],
+    );
+    distance = double.parse(distance.toStringAsFixed(3)) * 1000;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -207,6 +214,7 @@ class _PickupPesananState extends State<PickupPesanan> {
           usertipe: widget.usertipe,
           userOrderData: _userOrderData,
           order: _order,
+          distance: distance,
         ),
       ),
     );
