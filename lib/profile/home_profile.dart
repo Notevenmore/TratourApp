@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tratour/menu/history.dart';
 import 'package:tratour/onboarding/Onboarding.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:flutter/widgets.dart';
@@ -34,6 +35,14 @@ class _ProfilPageState extends State<ProfilPage> {
         MaterialPageRoute(
             builder: (context) =>
                 homepage(userid: widget.userid, usertipe: widget.usertipe)),
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              History(userid: widget.userid, usertipe: widget.usertipe),
+        ),
       );
     } else if (index == 4) {
       Navigator.push(

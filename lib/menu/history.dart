@@ -163,12 +163,14 @@ class _History extends State<History> {
   }
 
   Widget orderHistory(BuildContext context, List<Map<String, dynamic>> orders) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: orders
-            .map((order) => containerOrderHistory(context, order))
-            .toList(),
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: orders
+              .map((order) => containerOrderHistory(context, order))
+              .toList(),
+        ),
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:tratour/menu/history.dart';
 
 import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/profile/home_profile.dart';
@@ -77,6 +78,14 @@ class _DetailPesanan extends State<DetailPesanan> {
               homepage(userid: widget.userid, usertipe: widget.usertipe),
         ),
       );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              History(userid: widget.userid, usertipe: widget.usertipe),
+        ),
+      );
     } else if (index == 2) {
       Navigator.push(
         context,
@@ -128,7 +137,7 @@ class _DetailPesanan extends State<DetailPesanan> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    homepage(userid: widget.userid, usertipe: widget.usertipe),
+                    History(userid: widget.userid, usertipe: widget.usertipe),
               ),
             ),
           },

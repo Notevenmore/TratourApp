@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:tratour/menu/detail_pesanan.dart';
+import 'package:tratour/menu/history.dart';
 import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/profile/home_profile.dart';
 import 'package:tratour/template/navigation_bottom.dart';
@@ -133,6 +134,14 @@ class _ChooseLocation extends State<ChooseLocation> {
         MaterialPageRoute(
           builder: (context) =>
               homepage(userid: widget.userid, usertipe: widget.usertipe),
+        ),
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              History(userid: widget.userid, usertipe: widget.usertipe),
         ),
       );
     } else if (index == 2) {

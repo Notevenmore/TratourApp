@@ -246,204 +246,210 @@ class _PickupPesananState extends State<PickupPesanan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(color: Colors.white),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 104),
-                  Image.asset("assets/img/PickUp Sweeper Notification 1.png"),
-                  const SizedBox(height: 16),
-                  Text(
-                    "Ada Pesanan Untuk kamu nih!",
-                    style: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 80),
-                ],
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: const Color(0xFFD9D9D9),
-                  width: 0.5,
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 11),
-                    padding: const EdgeInsets.only(left: 21),
-                    child: Text(
-                      "${widget.selectedCategories} Pickup",
-                      style: GoogleFonts.ptSans(
-                        fontSize: 15,
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: const BoxDecoration(color: Colors.white),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 104),
+                    Image.asset("assets/img/PickUp Sweeper Notification 1.png"),
+                    const SizedBox(height: 16),
+                    Text(
+                      "Ada Pesanan Untuk kamu nih!",
+                      style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.w700,
+                        fontSize: 14,
                       ),
                     ),
+                    const SizedBox(height: 80),
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(0xFFD9D9D9),
+                    width: 0.5,
                   ),
-                  makeLine(),
-                  Container(
-                    width: 320,
-                    padding: const EdgeInsets.all(21),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FutureBuilder(
-                          future: _fetchDataFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                  child: Text('Error: ${snapshot.error}'));
-                            } else {
-                              if (_position != null && _order != null) {
-                                double distance = calculateDistance(
-                                  _position!.latitude,
-                                  _position!.longitude,
-                                  _order!['latitude'],
-                                  _order!['longitude'],
-                                );
-                                distance =
-                                    double.parse(distance.toStringAsFixed(3));
-                                return Text(
-                                  "$distance km",
-                                  style: GoogleFonts.ptSans(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 15,
-                                  ),
-                                );
-                              } else {
-                                return Text("Unable to calculate distance");
-                              }
-                            }
-                          },
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 11),
+                      padding: const EdgeInsets.only(left: 21),
+                      child: Text(
+                        "${widget.selectedCategories} Pickup",
+                        style: GoogleFonts.ptSans(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
                         ),
-                        const SizedBox(height: 16),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              detailLocation(
-                                Color(0xFF1D7948),
-                                "Lokasi Kamu",
-                                sweeperLocation,
-                              ),
-                              for (int i = 1; i <= 7; i++) (circleMaker()),
-                              detailLocation(
-                                Color(0xFFFBBC05),
-                                "Lokasi Pickup",
-                                userLocation,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                  makeLine(),
-                  FutureBuilder(
-                    future: _fetchDataFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 21, vertical: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                backgroundImage: AssetImage(
-                                  _userOrderData['photo_profile'],
-                                ),
-                                radius: 18,
-                              ),
-                              const SizedBox(width: 10),
-                              Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _userOrderData['name'],
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                    makeLine(),
+                    Container(
+                      width: 320,
+                      padding: const EdgeInsets.all(21),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FutureBuilder(
+                            future: _fetchDataFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else {
+                                if (_position != null && _order != null) {
+                                  double distance = calculateDistance(
+                                    _position!.latitude,
+                                    _position!.longitude,
+                                    _order!['latitude'],
+                                    _order!['longitude'],
+                                  );
+                                  distance =
+                                      double.parse(distance.toStringAsFixed(3));
+                                  return Text(
+                                    "$distance km",
+                                    style: GoogleFonts.ptSans(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 15,
                                     ),
-                                    const SizedBox(height: 16),
-                                    SizedBox(
-                                      width: 237,
-                                      child: Text(
-                                        _order['detailLocation'],
+                                  );
+                                } else {
+                                  return Text("Unable to calculate distance");
+                                }
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                detailLocation(
+                                  Color(0xFF1D7948),
+                                  "Lokasi Kamu",
+                                  sweeperLocation,
+                                ),
+                                for (int i = 1; i <= 7; i++) (circleMaker()),
+                                detailLocation(
+                                  Color(0xFFFBBC05),
+                                  "Lokasi Pickup",
+                                  userLocation,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    makeLine(),
+                    FutureBuilder(
+                      future: _fetchDataFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 21, vertical: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                    _userOrderData['photo_profile'],
+                                  ),
+                                  radius: 18,
+                                ),
+                                const SizedBox(width: 10),
+                                Container(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _userOrderData['name'],
                                         style: GoogleFonts.plusJakartaSans(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 10,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 17),
-                                    Container(
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              redirect_homepage(context);
-                                            },
-                                            icon: button(
-                                              const Color(0xFFEA4335),
-                                              "Tolak",
-                                            ),
+                                      const SizedBox(height: 16),
+                                      SizedBox(
+                                        width: 237,
+                                        child: Text(
+                                          _order['detailLocation'],
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 10,
                                           ),
-                                          const SizedBox(width: 30),
-                                          IconButton(
-                                            onPressed: () {
-                                              tracking(context);
-                                            },
-                                            icon: button(
-                                              const Color(0xFF6FD73E),
-                                              "Terima",
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(height: 17),
+                                      Container(
+                                        child: Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                redirect_homepage(context);
+                                              },
+                                              icon: button(
+                                                const Color(0xFFEA4335),
+                                                "Tolak",
+                                              ),
+                                            ),
+                                            const SizedBox(width: 30),
+                                            IconButton(
+                                              onPressed: () {
+                                                tracking(context);
+                                              },
+                                              icon: button(
+                                                const Color(0xFF6FD73E),
+                                                "Terima",
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
