@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:tratour/article/article_detail.dart';
+import 'package:tratour/menu/history.dart';
 import 'package:tratour/menu/homepage.dart';
 import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/profile/home_profile.dart';
@@ -41,6 +42,14 @@ class _HomepageWargaState extends State<HomepageWarga> {
         MaterialPageRoute(
             builder: (context) =>
                 homepage(userid: widget.userid, usertipe: widget.usertipe)),
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              History(userid: widget.userid, usertipe: widget.usertipe),
+        ),
       );
     } else if (index == 2) {
       Navigator.push(

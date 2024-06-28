@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/profile/home_profile.dart';
@@ -98,26 +99,45 @@ class _DetailPesanan extends State<DetailPesanan> {
     if (widget.detailLocation != null) {
       detailLocation = widget.detailLocation!;
     }
-    FirebaseFirestore.instance.collection("pesanan").add({
-      "userid": widget.userid,
-      "usertipe": widget.usertipe,
-      "selectedCategories": widget.selectedCategories,
-      "amountCategories": amountCategories,
-      "latitude": widget.latitude,
-      "longitude": widget.longitude,
-      "detailLocation": detailLocation,
-      "status_pengiriman": false,
-      "status_penjemputan": false,
-      "sweeper_id": "",
-    }).then((DocumentReference doc) => {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  homepage(userid: widget.userid, usertipe: widget.usertipe),
+    DateTime today = DateTime.now();
+    String date = DateFormat('dd MMMM yyyy').format(today);
+    FirebaseFirestore.instance
+        .collection("pesanan")
+        .add({
+          "userid": widget.userid,
+          "usertipe": widget.usertipe,
+          "selectedCategories": widget.selectedCategories,
+          "amountCategories": amountCategories,
+          "latitude": widget.latitude,
+          "longitude": widget.longitude,
+          "detailLocation": detailLocation,
+          "status_pengiriman": false,
+          "status_penjemputan": false,
+          "sweeper_id": "",
+          "sweeper_poin": driverPrice,
+          "user_poin": countAccumulation(),
+          'date': date,
+          'distance': 0,
+          "lokasi": widget.locationName,
+          "alamat": widget.currentAddress,
+          "alamat_sweeper": "Mencari Sweeper...",
+        })
+        .then(
+          (DocumentReference doc) => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    homepage(userid: widget.userid, usertipe: widget.usertipe),
+              ),
             ),
-          )
-        });
+          },
+        )
+        .catchError(
+          (error) {
+            print("Failed to Add Document: $error");
+          },
+        );
   }
 
   // fetch data category

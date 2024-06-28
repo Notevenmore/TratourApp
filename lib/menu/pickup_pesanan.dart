@@ -206,6 +206,7 @@ class _PickupPesananState extends State<PickupPesanan> {
         {
           "status_penjemputan": true,
           "sweeper_id": widget.userid,
+          "alamat_sweeper": sweeperLocation,
         },
       );
     });

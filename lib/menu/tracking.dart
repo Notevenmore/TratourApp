@@ -8,8 +8,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:tratour/menu/detail_pesanan_sweeper.dart';
+import 'package:intl/intl.dart';
 
+import 'package:tratour/menu/detail_pesanan_sweeper.dart';
 import 'package:tratour/models/sort_trash_data.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
 import 'package:tratour/menu/homepage.dart';
@@ -125,7 +126,7 @@ class _Tracking extends State<Tracking> {
   void initState() {
     super.initState();
     _determinePosition();
-    print("Address: $currentAddress");
+    // print("Address: $currentAddress");
   }
 
   void redirect_homepage(BuildContext context) {
@@ -198,17 +199,22 @@ class _Tracking extends State<Tracking> {
           );
           double customer_poin = customer.get("poin").toDouble();
           double sweeper_poin = sweeper.get("poin").toDouble();
+          double customer_price = 0;
           int iteration = 0;
           widget.order['selectedCategories'].forEach((index) {
             customer_price += (category[index ~/ 2][index % 2].price! *
                 widget.order['amountCategories'][iteration]);
-            customer_poin += customer_price;
             iteration++;
           });
-          sweeper_price = widget.distance * 5;
+          double sweeper_price = widget.distance * 5;
           sweeper_poin += sweeper_price;
+
+          customer_poin += customer_price;
           customer_poin -= sweeper_price;
           customer_poin -= 1000;
+
+          DateTime today = DateTime.now();
+          String date = DateFormat('dd MMMM yyyy').format(today);
           transaction.update(
             FirebaseFirestore.instance
                 .collection("warga")
@@ -226,8 +232,9 @@ class _Tracking extends State<Tracking> {
             {
               "status_pengiriman": true,
               "distance": widget.distance,
-              "user_poin": customer_poin,
-              "sweeper_poin": sweeper_poin,
+              "user_poin": customer_price,
+              "sweeper_poin": sweeper_price,
+              "date": date,
             },
           );
         }).then(
