@@ -108,11 +108,6 @@ class articledetailState extends State<articledetail> {
         selectedIndex: 0,
         userid: widget.userid,
         usertipe: widget.usertipe,
-        onItemTapped: (int index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
       ),
     );
   }

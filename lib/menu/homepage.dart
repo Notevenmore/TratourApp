@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tratour/homepage/homepage_sweeper.dart';
 import 'package:tratour/homepage/homepage_warga.dart';
-import 'package:tratour/profile/home_profile.dart';
 
 class homepage extends StatefulWidget {
   final String userid;
@@ -22,26 +21,6 @@ class _homepageState extends State<homepage> {
   void initState() {
     super.initState();
     getData();
-  }
-
-  void _onItemTapped(int index) {
-    print(index);
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                homepage(userid: widget.userid, usertipe: widget.usertipe)),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                    userid: widget.userid,
-                    usertipe: widget.usertipe,
-                  )));
-    }
   }
 
   void getData() async {

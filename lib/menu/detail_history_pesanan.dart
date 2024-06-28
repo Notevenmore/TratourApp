@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:tratour/menu/sort_trash_menu.dart';
-import 'package:tratour/profile/home_profile.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
-import 'package:tratour/menu/homepage.dart';
 
 class DetailHistoryPesanan extends StatefulWidget {
   final String userid;
@@ -29,33 +26,6 @@ class _DetailHistoryPesanan extends State<DetailHistoryPesanan> {
   @override
   void initState() {
     super.initState();
-  }
-
-  // aksi ketika tombol navigationbottom diklik
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              homepage(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SortTrashMenu(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                  userid: widget.userid, usertipe: widget.usertipe)));
-    }
   }
 
   @override
@@ -142,7 +112,6 @@ class _DetailHistoryPesanan extends State<DetailHistoryPesanan> {
         selectedIndex: 2,
         userid: widget.userid,
         usertipe: widget.usertipe,
-        onItemTapped: _onItemTapped,
       ),
     );
   }

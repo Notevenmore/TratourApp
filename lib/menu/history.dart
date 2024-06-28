@@ -1,21 +1,14 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tratour/menu/choose_location.dart';
+import 'package:tratour/helper/get_order.dart';
 import 'package:tratour/menu/detail_history_pesanan.dart';
-import 'package:tratour/menu/sort_trash_menu.dart';
-import 'package:tratour/profile/home_profile.dart';
 
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
-import 'package:tratour/menu/homepage.dart';
 import 'package:tratour/models/sort_trash_data.dart';
-
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
+import 'package:tratour/helper/fetch_category_from_json.dart';
 
 class History extends StatefulWidget {
   final String userid;
@@ -37,77 +30,7 @@ class _History extends State<History> {
   void initState() {
     super.initState();
     categories = fetchCategoryFromJson();
-    orders = getOrder();
-  }
-
-  // fetch data category
-  Future<List<List<Category>>> fetchCategoryFromJson() async {
-    try {
-      final String response =
-          await rootBundle.loadString('assets/json/category.json');
-      final List<dynamic> data = jsonDecode(response);
-      return data.map((row) {
-        return (row as List).map((item) => Category.fromJson(item)).toList();
-      }).toList();
-    } catch (e) {
-      print(e);
-      return [];
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> getOrder() async {
-    try {
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('pesanan').get();
-
-      List<Map<String, dynamic>> ordersFirebase = snapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        data['id'] = doc.id;
-        return data;
-      }).toList();
-
-      List<Map<String, dynamic>> ordersUser = ordersFirebase.where((doc) {
-        return doc['userid'] == widget.userid;
-      }).toList();
-
-      return ordersUser;
-    } catch (e) {
-      print('gagal ambil');
-      return [];
-    }
-  }
-
-  // aksi ketika tombol navigationbottom diklik
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                homepage(userid: widget.userid, usertipe: widget.usertipe)),
-      );
-    } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              History(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SortTrashMenu(
-                userid: widget.userid, usertipe: widget.usertipe)),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                  userid: widget.userid, usertipe: widget.usertipe)));
-    }
+    orders = getOrder(widget.userid);
   }
 
   void redirectDetailPesanan(BuildContext context, Map<String, dynamic> order) {
@@ -157,7 +80,6 @@ class _History extends State<History> {
         selectedIndex: selectedIndex,
         userid: widget.userid,
         usertipe: widget.usertipe,
-        onItemTapped: _onItemTapped,
       ),
     );
   }
@@ -260,7 +182,7 @@ class _History extends State<History> {
 
   Widget orderStatus(bool statusPengiriman, bool statusPenjemputan) {
     return Container(
-      margin: EdgeInsets.only(top: 6),
+      margin: const EdgeInsets.only(top: 6),
       child: Row(
         children: [
           if (statusPengiriman) ...[

@@ -8,13 +8,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:tratour/menu/detail_pesanan.dart';
-import 'package:tratour/menu/history.dart';
-import 'package:tratour/menu/sort_trash_menu.dart';
-import 'package:tratour/profile/home_profile.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
-import 'package:tratour/menu/homepage.dart';
 import 'package:tratour/template/input_field.dart';
+import 'package:tratour/helper/map_permission.dart';
 
 class ChooseLocation extends StatefulWidget {
   final String userid;
@@ -81,26 +78,7 @@ class _ChooseLocation extends State<ChooseLocation> {
   }
 
   Future<void> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
+    await MapPermission();
 
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium);
@@ -124,41 +102,6 @@ class _ChooseLocation extends State<ChooseLocation> {
   void initState() {
     super.initState();
     _determinePosition();
-  }
-
-  // aksi ketika tombol navigationbottom diklik
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              homepage(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              History(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SortTrashMenu(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                  userid: widget.userid, usertipe: widget.usertipe)));
-    }
   }
 
   void _detailPesanan(BuildContext context) {
@@ -313,7 +256,6 @@ class _ChooseLocation extends State<ChooseLocation> {
         selectedIndex: 2,
         userid: widget.userid,
         usertipe: widget.usertipe,
-        onItemTapped: _onItemTapped,
       ),
     );
   }

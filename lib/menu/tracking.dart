@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
+import 'package:tratour/helper/fetch_category_from_json.dart';
+import 'package:tratour/helper/map_permission.dart';
 import 'package:tratour/menu/detail_pesanan_sweeper.dart';
-import 'package:tratour/models/sort_trash_data.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
 import 'package:tratour/menu/homepage.dart';
 
@@ -83,26 +83,7 @@ class _Tracking extends State<Tracking> {
   }
 
   Future<void> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
+    await MapPermission();
 
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium);
@@ -150,21 +131,6 @@ class _Tracking extends State<Tracking> {
         ),
       ),
     );
-  }
-
-  // fetch data category
-  Future<List<List<Category>>> fetchCategoryFromJson() async {
-    try {
-      final String response =
-          await rootBundle.loadString('assets/json/category.json');
-      final List<dynamic> data = jsonDecode(response);
-      return data.map((row) {
-        return (row as List).map((item) => Category.fromJson(item)).toList();
-      }).toList();
-    } catch (e) {
-      print(e);
-      return [];
-    }
   }
 
   void checkValidLocation() {

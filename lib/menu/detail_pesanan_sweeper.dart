@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
+import 'package:tratour/helper/fetch_category_from_json.dart';
 import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/profile/home_profile.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
@@ -60,48 +59,6 @@ class _DetailPesananSweeper extends State<DetailPesananSweeper> {
       return 0;
     }
     return num;
-  }
-
-  // aksi ketika tombol navigationbottom diklik
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              homepage(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SortTrashMenu(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                  userid: widget.userid, usertipe: widget.usertipe)));
-    }
-  }
-
-  // fetch data category
-  Future<List<List<Category>>> fetchCategoryFromJson() async {
-    try {
-      final String response =
-          await rootBundle.loadString('assets/json/category.json');
-      final List<dynamic> data = jsonDecode(response);
-      return data.map((row) {
-        return (row as List).map((item) => Category.fromJson(item)).toList();
-      }).toList();
-    } catch (e) {
-      print(e);
-      return [];
-    }
   }
 
   void redirect_homepage(BuildContext context) {

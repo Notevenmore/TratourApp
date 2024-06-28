@@ -4,10 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:tratour/article/article_detail.dart';
-import 'package:tratour/menu/history.dart';
-import 'package:tratour/menu/homepage.dart';
-import 'package:tratour/menu/sort_trash_menu.dart';
-import 'package:tratour/profile/home_profile.dart';
 import 'package:tratour/template/bar_app.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 
@@ -33,40 +29,6 @@ class _HomepageWargaState extends State<HomepageWarga> {
   void initState() {
     super.initState();
     getArticles();
-  }
-
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                homepage(userid: widget.userid, usertipe: widget.usertipe)),
-      );
-    } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              History(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SortTrashMenu(
-                userid: widget.userid, usertipe: widget.usertipe)),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                    userid: widget.userid,
-                    usertipe: widget.usertipe,
-                  )));
-    }
   }
 
   Future<void> getArticles() async {
@@ -449,7 +411,6 @@ class _HomepageWargaState extends State<HomepageWarga> {
         selectedIndex: selectedIndex,
         userid: widget.userid,
         usertipe: widget.usertipe,
-        onItemTapped: _onItemTapped,
       ),
     );
   }

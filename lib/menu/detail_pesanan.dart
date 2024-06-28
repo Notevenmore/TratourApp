@@ -1,19 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:tratour/menu/history.dart';
+import 'package:tratour/helper/count_accumulation.dart';
 
-import 'package:tratour/menu/sort_trash_menu.dart';
-import 'package:tratour/profile/home_profile.dart';
+import 'package:tratour/helper/fetch_category_from_json.dart';
+import 'package:tratour/menu/history.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
-import 'package:tratour/menu/homepage.dart';
 import 'package:tratour/models/sort_trash_data.dart';
 
 class DetailPesanan extends StatefulWidget {
@@ -56,53 +53,6 @@ class _DetailPesanan extends State<DetailPesanan> {
     amountCategories = List<int>.filled(widget.selectedCategories.length, 0);
   }
 
-  int countAccumulation() {
-    int num = 0;
-    try {
-      for (int i = 0; i < amountCategories.length; i++) {
-        num = num + amountCategories[i] * priceCategories[i];
-      }
-    } catch (e) {
-      return 0;
-    }
-    return num;
-  }
-
-  // aksi ketika tombol navigationbottom diklik
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              homepage(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              History(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SortTrashMenu(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                  userid: widget.userid, usertipe: widget.usertipe)));
-    }
-  }
-
   void _saveOrder(BuildContext context) async {
     String detailLocation = '-';
     if (widget.detailLocation != null) {
@@ -124,7 +74,7 @@ class _DetailPesanan extends State<DetailPesanan> {
           "status_penjemputan": false,
           "sweeper_id": "",
           "sweeper_poin": driverPrice,
-          "user_poin": countAccumulation(),
+          "user_poin": countAccumulation(amountCategories, priceCategories),
           'date': date,
           'distance': 0,
           "lokasi": widget.locationName,
@@ -147,21 +97,6 @@ class _DetailPesanan extends State<DetailPesanan> {
             print("Failed to Add Document: $error");
           },
         );
-  }
-
-  // fetch data category
-  Future<List<List<Category>>> fetchCategoryFromJson() async {
-    try {
-      final String response =
-          await rootBundle.loadString('assets/json/category.json');
-      final List<dynamic> data = jsonDecode(response);
-      return data.map((row) {
-        return (row as List).map((item) => Category.fromJson(item)).toList();
-      }).toList();
-    } catch (e) {
-      print(e);
-      return [];
-    }
   }
 
   @override
@@ -296,8 +231,8 @@ class _DetailPesanan extends State<DetailPesanan> {
               SizedBox(
                 child: Column(
                   children: [
-                    _perkiraanPendapatan(
-                        "Akumulasi Sampah", countAccumulation()),
+                    _perkiraanPendapatan("Akumulasi Sampah",
+                        countAccumulation(amountCategories, priceCategories)),
                     _perkiraanPendapatan("Biaya Admin", -adminPrice),
                     _perkiraanPendapatan("Biaya Driver (/m)", -driverPrice),
                     Container(
@@ -310,7 +245,9 @@ class _DetailPesanan extends State<DetailPesanan> {
                     ),
                     _perkiraanPendapatan(
                       "Total Pendapatan",
-                      countAccumulation() - adminPrice - driverPrice,
+                      countAccumulation(amountCategories, priceCategories) -
+                          adminPrice -
+                          driverPrice,
                     ),
                   ],
                 ),
@@ -351,7 +288,6 @@ class _DetailPesanan extends State<DetailPesanan> {
         selectedIndex: 2,
         userid: widget.userid,
         usertipe: widget.usertipe,
-        onItemTapped: _onItemTapped,
       ),
     );
   }

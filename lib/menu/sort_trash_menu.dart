@@ -2,16 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tratour/menu/choose_location.dart';
-import 'package:tratour/menu/history.dart';
-import 'package:tratour/profile/home_profile.dart';
 
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
-import 'package:tratour/menu/homepage.dart';
 import 'package:tratour/models/sort_trash_data.dart';
-
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
+import 'package:tratour/helper/fetch_category_from_json.dart';
 
 class SortTrashMenu extends StatefulWidget {
   final String userid;
@@ -24,8 +19,6 @@ class SortTrashMenu extends StatefulWidget {
 }
 
 class _SortTrashMenu extends State<SortTrashMenu> {
-  int selectedIndex = 2;
-
   // inisialisasi isi konten kategori
   late Future<List<List<Category>>> categories;
   Set<int> selectedCategories = Set();
@@ -34,54 +27,6 @@ class _SortTrashMenu extends State<SortTrashMenu> {
   void initState() {
     super.initState();
     categories = fetchCategoryFromJson();
-  }
-
-  // fetch data category
-  Future<List<List<Category>>> fetchCategoryFromJson() async {
-    try {
-      final String response =
-          await rootBundle.loadString('assets/json/category.json');
-      final List<dynamic> data = jsonDecode(response);
-      return data.map((row) {
-        return (row as List).map((item) => Category.fromJson(item)).toList();
-      }).toList();
-    } catch (e) {
-      print(e);
-      return [];
-    }
-  }
-
-  // aksi ketika tombol navigationbottom diklik
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                homepage(userid: widget.userid, usertipe: widget.usertipe)),
-      );
-    } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              History(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SortTrashMenu(
-                userid: widget.userid, usertipe: widget.usertipe)),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                  userid: widget.userid, usertipe: widget.usertipe)));
-    }
   }
 
   // aksi untuk memilih kategori
@@ -206,7 +151,6 @@ class _SortTrashMenu extends State<SortTrashMenu> {
         selectedIndex: 2,
         userid: widget.userid,
         usertipe: widget.usertipe,
-        onItemTapped: _onItemTapped,
       ),
     );
   }

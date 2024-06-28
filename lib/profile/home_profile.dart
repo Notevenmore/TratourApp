@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tratour/menu/history.dart';
 import 'package:tratour/onboarding/Onboarding.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tratour/menu/homepage.dart';
 import 'edit_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -26,31 +24,6 @@ class _ProfilPageState extends State<ProfilPage> {
   void initState() {
     super.initState();
     getData();
-  }
-
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                homepage(userid: widget.userid, usertipe: widget.usertipe)),
-      );
-    } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              History(userid: widget.userid, usertipe: widget.usertipe),
-        ),
-      );
-    } else if (index == 4) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfilPage(
-                  userid: widget.userid, usertipe: widget.usertipe)));
-    }
   }
 
   void getData() async {
@@ -312,7 +285,6 @@ class _ProfilPageState extends State<ProfilPage> {
         selectedIndex: selectedIndex,
         userid: widget.userid,
         usertipe: widget.usertipe,
-        onItemTapped: _onItemTapped,
       ),
     );
   }

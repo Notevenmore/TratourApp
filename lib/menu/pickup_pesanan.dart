@@ -6,7 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:tratour/menu/homepage.dart';
+import 'package:tratour/helper/map_permission.dart';
+import 'package:tratour/helper/redirect_homepage.dart';
 import 'package:tratour/menu/tracking.dart';
 
 class PickupPesanan extends StatefulWidget {
@@ -139,27 +140,8 @@ class _PickupPesananState extends State<PickupPesanan> {
   }
 
   Future<void> getCurrentPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
     try {
-      serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        return Future.error('Location services are disabled.');
-      }
-
-      permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          return Future.error('Location permissions are denied');
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        return Future.error(
-            'Location permissions are permanently denied, we cannot request permissions.');
-      }
+      await MapPermission();
 
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.medium);
@@ -213,8 +195,8 @@ class _PickupPesananState extends State<PickupPesanan> {
     double distance = calculateDistance(
       _position!.latitude,
       _position!.longitude,
-      _order!['latitude'],
-      _order!['longitude'],
+      _order['latitude'],
+      _order['longitude'],
     );
     distance = double.parse(distance.toStringAsFixed(3)) * 1000;
     Navigator.push(
@@ -226,18 +208,6 @@ class _PickupPesananState extends State<PickupPesanan> {
           userOrderData: _userOrderData,
           order: _order,
           distance: distance,
-        ),
-      ),
-    );
-  }
-
-  void redirect_homepage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => homepage(
-          userid: widget.userid,
-          usertipe: widget.usertipe,
         ),
       ),
     );
@@ -416,7 +386,10 @@ class _PickupPesananState extends State<PickupPesanan> {
                                           children: [
                                             IconButton(
                                               onPressed: () {
-                                                redirect_homepage(context);
+                                                redirect_homepage(
+                                                    context,
+                                                    widget.userid,
+                                                    widget.usertipe);
                                               },
                                               icon: button(
                                                 const Color(0xFFEA4335),
