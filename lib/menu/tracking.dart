@@ -12,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:tratour/helper/fetch_category_from_json.dart';
 import 'package:tratour/helper/map_permission.dart';
 import 'package:tratour/menu/detail_pesanan_sweeper.dart';
+import 'package:tratour/routes/detail_pesanan_sweeper_routes.dart';
+import 'package:tratour/routes/homepage_routes.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
 import 'package:tratour/menu/homepage.dart';
 
@@ -39,6 +41,7 @@ class _Tracking extends State<Tracking> {
   int selectedIndex = 2;
   late GoogleMapController mapController;
   LatLng? _currentPosition;
+  LatLng? _orderPosition;
   final List<Marker> _markers = [];
   String currentPlaceName = '';
   String currentAddress = '';
@@ -89,6 +92,8 @@ class _Tracking extends State<Tracking> {
         desiredAccuracy: LocationAccuracy.medium);
     setState(() {
       _currentPosition = LatLng(position.latitude, position.longitude);
+      _orderPosition =
+          LatLng(widget.order['latitude'], widget.order['longitude']);
       _markers.add(
         Marker(
           markerId: const MarkerId('CurrentLocation'),
@@ -100,7 +105,7 @@ class _Tracking extends State<Tracking> {
         ),
       );
     });
-    await _updateMarkerInfo(_currentPosition!);
+    await _updateMarkerInfo(_orderPosition!);
   }
 
   @override
@@ -110,27 +115,21 @@ class _Tracking extends State<Tracking> {
     // print("Address: $currentAddress");
   }
 
-  void redirect_homepage(BuildContext context) {
-    FirebaseFirestore.instance.runTransaction((transaction) async {
-      transaction.update(
-        FirebaseFirestore.instance
-            .collection("pesanan")
-            .doc(widget.order['id']),
-        {
-          "status_penjemputan": false,
-          "sweeper_id": "",
-        },
-      );
-    });
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => homepage(
-          userid: widget.userid,
-          usertipe: widget.usertipe,
-        ),
-      ),
+  void redirectHomepage(BuildContext context) {
+    FirebaseFirestore.instance.runTransaction(
+      (transaction) async {
+        transaction.update(
+          FirebaseFirestore.instance
+              .collection("pesanan")
+              .doc(widget.order['id']),
+          {
+            "status_penjemputan": false,
+            "sweeper_id": "",
+          },
+        );
+      },
     );
+    redirect_homepage(context, widget.userid, widget.usertipe);
   }
 
   void checkValidLocation() {
@@ -243,20 +242,16 @@ class _Tracking extends State<Tracking> {
     } catch (e) {
       print("Error konversi data: $e");
     }
-    Navigator.push(
+    redirect_detail_pesanan_sweeper(
       context,
-      MaterialPageRoute(
-        builder: (context) => DetailPesananSweeper(
-          userid: widget.userid,
-          usertipe: widget.usertipe,
-          selectedCategories: widget.order['selectedCategories'],
-          currentAddress: currentAddress,
-          locationName: currentPlaceName,
-          amountCategories: amountCategories,
-          sweeperPrice: sweeperPrice,
-          accumulation: customerPrice,
-        ),
-      ),
+      widget.userid,
+      widget.usertipe,
+      widget.order,
+      currentAddress,
+      currentPlaceName,
+      amountCategories,
+      sweeperPrice,
+      customerPrice,
     );
   }
 
@@ -407,7 +402,7 @@ class _Tracking extends State<Tracking> {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  redirect_homepage(context);
+                                  redirectHomepage(context);
                                 },
                                 icon: buttonConfirmed(
                                   Colors.white,

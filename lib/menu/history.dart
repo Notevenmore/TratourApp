@@ -1,13 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tratour/helper/get_order.dart';
-import 'package:tratour/menu/detail_history_pesanan.dart';
+import 'package:tratour/routes/detail_history_routes.dart';
 
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
-import 'package:tratour/models/sort_trash_data.dart';
+import 'package:tratour/models/categories_model.dart';
 import 'package:tratour/helper/fetch_category_from_json.dart';
 
 class History extends StatefulWidget {
@@ -31,19 +30,6 @@ class _History extends State<History> {
     super.initState();
     categories = fetchCategoryFromJson();
     orders = getOrder(widget.userid);
-  }
-
-  void redirectDetailPesanan(BuildContext context, Map<String, dynamic> order) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetailHistoryPesanan(
-          userid: widget.userid,
-          usertipe: widget.usertipe,
-          order: order,
-        ),
-      ),
-    );
   }
 
   @override
@@ -163,6 +149,8 @@ class _History extends State<History> {
                 redirectDetailPesanan(
                   context,
                   order,
+                  widget.userid,
+                  widget.usertipe,
                 );
               },
               child: Text(

@@ -8,10 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:tratour/helper/count_accumulation.dart';
 
 import 'package:tratour/helper/fetch_category_from_json.dart';
-import 'package:tratour/menu/history.dart';
+import 'package:tratour/routes/pesanan_routes.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
-import 'package:tratour/models/sort_trash_data.dart';
+import 'package:tratour/models/categories_model.dart';
 
 class DetailPesanan extends StatefulWidget {
   final String userid;
@@ -83,19 +83,11 @@ class _DetailPesanan extends State<DetailPesanan> {
         })
         .then(
           (DocumentReference doc) => {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    History(userid: widget.userid, usertipe: widget.usertipe),
-              ),
-            ),
+            redirect_pesanan(context, widget.userid, widget.usertipe),
           },
         )
         .catchError(
-          (error) {
-            print("Failed to Add Document: $error");
-          },
+          (error) => print("Failed to Add Document: $error"),
         );
   }
 

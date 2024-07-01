@@ -5,11 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:tratour/helper/fetch_category_from_json.dart';
-import 'package:tratour/menu/sort_trash_menu.dart';
-import 'package:tratour/profile/home_profile.dart';
+import 'package:tratour/routes/homepage_routes.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
-import 'package:tratour/menu/homepage.dart';
-import 'package:tratour/models/sort_trash_data.dart';
+import 'package:tratour/models/categories_model.dart';
 
 class DetailPesananSweeper extends StatefulWidget {
   final String userid;
@@ -47,30 +45,6 @@ class _DetailPesananSweeper extends State<DetailPesananSweeper> {
   void initState() {
     super.initState();
     categories = fetchCategoryFromJson();
-  }
-
-  int countAccumulation() {
-    int num = 0;
-    try {
-      for (int i = 0; i < widget.amountCategories.length; i++) {
-        num = num + widget.amountCategories[i] * priceCategories[i];
-      }
-    } catch (e) {
-      return 0;
-    }
-    return num;
-  }
-
-  void redirect_homepage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => homepage(
-          userid: widget.userid,
-          usertipe: widget.usertipe,
-        ),
-      ),
-    );
   }
 
   @override
@@ -235,7 +209,7 @@ class _DetailPesananSweeper extends State<DetailPesananSweeper> {
                 child: ElevatedButton(
                   onPressed: () {
                     // kirim data
-                    redirect_homepage(context);
+                    redirect_homepage(context, widget.userid, widget.usertipe);
                   },
                   style: ElevatedButton.styleFrom(
                     padding:

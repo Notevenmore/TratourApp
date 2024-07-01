@@ -1,19 +1,14 @@
 // aksi ketika tombol navigationbottom diklik
 import 'package:flutter/material.dart';
 import 'package:tratour/menu/history.dart';
-import 'package:tratour/menu/homepage.dart';
 import 'package:tratour/menu/sort_trash_menu.dart';
 import 'package:tratour/profile/home_profile.dart';
+import 'package:tratour/routes/homepage_routes.dart';
 
 void OnItemTapped(
     BuildContext context, int index, String userid, String usertipe) {
   if (index == 0) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => homepage(userid: userid, usertipe: usertipe),
-      ),
-    );
+    redirect_homepage(context, userid, usertipe);
   } else if (index == 1) {
     Navigator.push(
       context,

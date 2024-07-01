@@ -7,8 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:tratour/helper/map_permission.dart';
-import 'package:tratour/helper/redirect_homepage.dart';
-import 'package:tratour/menu/tracking.dart';
+import 'package:tratour/routes/homepage_routes.dart';
+import 'package:tratour/routes/tracking_routes.dart';
 
 class PickupPesanan extends StatefulWidget {
   final String userid;
@@ -199,17 +199,13 @@ class _PickupPesananState extends State<PickupPesanan> {
       _order['longitude'],
     );
     distance = double.parse(distance.toStringAsFixed(3)) * 1000;
-    Navigator.push(
+    redirect_tracking(
       context,
-      MaterialPageRoute(
-        builder: (context) => Tracking(
-          userid: widget.userid,
-          usertipe: widget.usertipe,
-          userOrderData: _userOrderData,
-          order: _order,
-          distance: distance,
-        ),
-      ),
+      widget.userid,
+      widget.usertipe,
+      _userOrderData,
+      _order,
+      distance,
     );
   }
 

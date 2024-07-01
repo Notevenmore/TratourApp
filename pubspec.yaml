@@ -51,6 +51,7 @@ dependencies:
   image_picker: ^1.1.2
   path_provider: ^2.0.6
   intl: ^0.19.0
+  collection: ^1.18.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -114,6 +115,9 @@ flutter:
     - assets/pattern/page2/arrowNextGreen.png
     - assets/pattern/page2/Go Green Recycle Truck.png
     - assets/json/category.json
+    - assets/json/paketdata.json
+    - assets/json/pulsa.json
+    - assets/json/voucherlistrik.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

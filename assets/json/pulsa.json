@@ -1,0 +1,26 @@
+[
+  {
+    "price": 5000,
+    "nominal": 3000
+  },
+  {
+    "price": 10000,
+    "nominal": 5000
+  },
+  {
+    "price": 25000,
+    "nominal": 10000
+  },
+  {
+    "price": 50000,
+    "nominal": 200000
+  },
+  {
+    "price": 100000,
+    "nominal": 350000
+  },
+  {
+    "price": 150000,
+    "nominal": 500000
+  }
+]

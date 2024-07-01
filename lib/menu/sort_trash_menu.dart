@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tratour/menu/choose_location.dart';
+import 'package:tratour/routes/map_routes.dart';
 
 import 'package:tratour/template/navigation_bottom.dart';
 import 'package:tratour/template/bar_app_secondversion.dart';
-import 'package:tratour/models/sort_trash_data.dart';
+import 'package:tratour/models/categories_model.dart';
 import 'package:tratour/helper/fetch_category_from_json.dart';
 
 class SortTrashMenu extends StatefulWidget {
@@ -39,20 +39,6 @@ class _SortTrashMenu extends State<SortTrashMenu> {
         selectedCategories.add(index);
       }
     });
-  }
-
-  void redirectToMap(BuildContext context) {
-    if (selectedCategories.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ChooseLocation(
-                  userid: widget.userid,
-                  usertipe: widget.usertipe,
-                  selectedCategories: selectedCategories,
-                )),
-      );
-    }
   }
 
   @override
@@ -118,7 +104,12 @@ class _SortTrashMenu extends State<SortTrashMenu> {
             const SizedBox(height: 20),
             IconButton(
               onPressed: () {
-                redirectToMap(context);
+                redirectToMap(
+                  context,
+                  selectedCategories,
+                  widget.userid,
+                  widget.usertipe,
+                );
               },
               icon: Container(
                 width: 335,

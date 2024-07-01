@@ -4,6 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:tratour/article/article_detail.dart';
+import 'package:tratour/menu/voucher.dart';
+import 'package:tratour/routes/redeem_routes.dart';
 import 'package:tratour/template/bar_app.dart';
 import 'package:tratour/template/navigation_bottom.dart';
 
@@ -56,6 +58,19 @@ class _HomepageWargaState extends State<HomepageWarga> {
       MaterialPageRoute(
         builder: (context) => articledetail(
             articleid: id, userid: widget.userid, usertipe: widget.usertipe),
+      ),
+    );
+  }
+
+  void goToVoucherMenu() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Voucher(
+          userid: widget.userid,
+          usertipe: widget.usertipe,
+          userdata: widget.userdata,
+        ),
       ),
     );
   }
@@ -190,75 +205,113 @@ class _HomepageWargaState extends State<HomepageWarga> {
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      SizedBox(
-                        width: 50,
-                        child: Column(
-                          children: [
-                            Image.asset("assets/img/pulsaprabayar.png"),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Pulsa Prabayar',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ptSans(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
+                      IconButton(
+                        onPressed: () {
+                          redirect_redeem(
+                            context,
+                            widget.userid,
+                            widget.usertipe,
+                            "Pulsa Prabayar",
+                            widget.userdata,
+                          );
+                        },
+                        icon: SizedBox(
+                          width: 50,
+                          child: Column(
+                            children: [
+                              Image.asset("assets/img/pulsaprabayar.png"),
+                              const SizedBox(height: 6),
+                              Text(
+                                'Pulsa Prabayar',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.ptSans(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 36),
-                      SizedBox(
-                        width: 50,
-                        child: Column(
-                          children: [
-                            Image.asset("assets/img/data.png"),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Paket Data',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ptSans(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
+                      const SizedBox(width: 20),
+                      IconButton(
+                        onPressed: () {
+                          redirect_redeem(
+                            context,
+                            widget.userid,
+                            widget.usertipe,
+                            "Paket Data",
+                            widget.userdata,
+                          );
+                        },
+                        icon: SizedBox(
+                          width: 50,
+                          child: Column(
+                            children: [
+                              Image.asset("assets/img/data.png"),
+                              const SizedBox(height: 6),
+                              Text(
+                                'Paket Data',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.ptSans(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 36),
-                      SizedBox(
-                        width: 50,
-                        child: Column(
-                          children: [
-                            Image.asset("assets/img/voucherlistrik.png"),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Voucher Listrik',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ptSans(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
+                      const SizedBox(width: 20),
+                      IconButton(
+                        onPressed: () {
+                          redirect_redeem(
+                            context,
+                            widget.userid,
+                            widget.usertipe,
+                            "Voucher Listrik",
+                            widget.userdata,
+                          );
+                        },
+                        icon: SizedBox(
+                          width: 50,
+                          child: Column(
+                            children: [
+                              Image.asset("assets/img/voucherlistrik.png"),
+                              const SizedBox(height: 6),
+                              Text(
+                                'Voucher Listrik',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.ptSans(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 36),
-                      SizedBox(
-                        width: 50,
-                        child: Column(
-                          children: [
-                            Image.asset("assets/img/lainnya.png"),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Voucher Lainnya',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ptSans(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
+                      const SizedBox(width: 20),
+                      IconButton(
+                        onPressed: () {
+                          goToVoucherMenu();
+                        },
+                        icon: SizedBox(
+                          width: 50,
+                          child: Column(
+                            children: [
+                              Image.asset("assets/img/lainnya.png"),
+                              const SizedBox(height: 6),
+                              Text(
+                                'Voucher Lainnya',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.ptSans(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],

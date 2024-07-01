@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:tratour/models/sort_trash_data.dart';
+import 'package:tratour/models/categories_model.dart';
 
 Future<List<List<Category>>> fetchCategoryFromJson() async {
   try {
