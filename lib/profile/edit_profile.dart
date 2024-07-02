@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'home_profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart' as path;
 
 class UpdateProfilePage extends StatefulWidget {
   final String userId;
@@ -117,14 +119,35 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     }
   }
 
+  // Function to upload image to Firebase Storage
+  Future<String?> uploadImageToFirebase(File image, String userEmail) async {
+    try {
+      String fileName = path.basename(image.path);
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child('uploads/$userEmail/$fileName');
+
+      // Uploading the file
+      UploadTask uploadTask = storageReference.putFile(image);
+      await uploadTask.whenComplete(() => null);
+
+      // Getting the download URL of the uploaded file
+      String downloadURL = await storageReference.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
+
   Future<void> _updateProfile(BuildContext context) async {
-    File? savedImage;
     if (_formKey.currentState!.validate()) {
       try {
+        String? downloadURL;
         if (_image != null) {
-          savedImage = await _image!.copy('assets/img/${widget.userId}.jpg');
-          print('Image saved to: ${savedImage.path}');
+          downloadURL =
+              await uploadImageToFirebase(_image!, _userdata['email']);
         }
+
         await FirebaseFirestore.instance
             .collection('warga')
             .doc(widget.userId)
@@ -137,7 +160,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
           'district': _districtController.text,
           'village': _villageController.text,
           'postal_code': _postalCodeController.text,
-          'photo_profile': "${savedImage?.path}",
+          'photo_profile': downloadURL ?? "",
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -252,8 +275,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               ),
               const SizedBox(height: 20.0),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF1D7948),
+                ),
                 onPressed: () => _updateProfile(context),
-                child: const Text('Update Profile'),
+                child: const Text(
+                  'Update Profile',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

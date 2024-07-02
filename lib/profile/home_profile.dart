@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tratour/onboarding/Onboarding.dart';
 import 'package:tratour/template/navigation_bottom.dart';
@@ -16,9 +18,12 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
+  final TextEditingController _referalController = TextEditingController();
   late Map<String, dynamic> _userdata = {};
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // bool _isLoading = true;
   int selectedIndex = 4;
+  List<Map<String, dynamic>> referralCode = [];
 
   @override
   void initState() {
@@ -77,9 +82,13 @@ class _ProfilPageState extends State<ProfilPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 30.0,
-                      backgroundImage: AssetImage('assets/img/username.jpg'),
+                      backgroundImage: _userdata['photo_profile'] != null &&
+                              _userdata['photo_profile'].isNotEmpty
+                          ? NetworkImage(_userdata['photo_profile'])
+                          : AssetImage('assets/img/username.jpg')
+                              as ImageProvider,
                     ),
                     const SizedBox(width: 20.0),
                     Column(
@@ -129,96 +138,8 @@ class _ProfilPageState extends State<ProfilPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Container(
-                      width: 152.0,
-                      height: 152,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(20.0),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: Text(
-                              'Kesh23',
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: Text(
-                              'Kode Referral',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 5.0),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Container(
-                      width: 152.0,
-                      height: 152,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: Text(
-                              "${_userdata['poin']}",
-                              style: const TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Center(
-                            child: Text(
-                              'Poin',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 5.0),
-                        ],
-                      ),
-                    ),
-                  ),
+                  ReferralCodeCard(context),
+                  PointsCard(context),
                 ],
               ),
 
@@ -286,6 +207,323 @@ class _ProfilPageState extends State<ProfilPage> {
         userid: widget.userid,
         usertipe: widget.usertipe,
       ),
+    );
+  }
+
+  Widget ReferralCodeCard(BuildContext context) {
+    return GestureDetector(
+      onTap: _userdata['referral_code'] == null
+          ? () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    ),
+                    title: Center(
+                      child: Text(
+                        'Kode Referral',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    content: TextField(
+                      controller: _referalController,
+                      decoration: InputDecoration(
+                        hintText: 'Masukkan kode referral di sini',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                    actions: [
+                      Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF1D7948),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          onPressed: () async {
+                            try {
+                              QuerySnapshot querySnapshot =
+                                  await FirebaseFirestore.instance
+                                      .collection('referral_code')
+                                      .get();
+                              setState(() {
+                                referralCode = querySnapshot.docs
+                                    .map((doc) =>
+                                        doc.data() as Map<String, dynamic>)
+                                    .toList();
+                              });
+                              print(referralCode);
+                              print(_referalController.text);
+                              DocumentReference docRef = _firestore
+                                  .collection('warga')
+                                  .doc(widget.userid);
+                              for (var i = 0; i < referralCode.length; i++) {
+                                if (_referalController.text ==
+                                    referralCode[i]['name']) {
+                                  setState(() {
+                                    docRef.update({
+                                      'poin': FieldValue.increment(2000),
+                                      'referral_code': _referalController.text
+                                    });
+                                    _userdata['poin'] += 2000;
+                                    _userdata['referral_code'] =
+                                        _referalController.text;
+                                  });
+                                  Navigator.of(context)
+                                      .pop(); // Close the current dialog
+                                  showSuccessDialog(context);
+                                }
+                              }
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
+                          child: Text(
+                            'Redeem',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+          : null,
+      child: ("${_userdata['referral_code']}" == null)
+          ? Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Container(
+                width: 152.0,
+                height: 152,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 8.0,
+                      left: 8.0,
+                      child: Icon(Icons
+                          .card_giftcard), // Gantilah dengan ikon yang sesuai
+                    ),
+                    Positioned(
+                      top: 8.0,
+                      right: 8.0,
+                      child: Icon(Icons.more_vert),
+                    ),
+                    Center(
+                      child: Text(
+                        "${_userdata['referral_code']}",
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8.0,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Text(
+                          'Referral Code',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                width: 152.0,
+                height: 152,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 8.0,
+                      left: 8.0,
+                      child: Icon(Icons
+                          .card_giftcard), // Gantilah dengan ikon yang sesuai
+                    ),
+                    Positioned(
+                      top: 8.0,
+                      right: 8.0,
+                      child: Icon(Icons.more_vert),
+                    ),
+                    Center(
+                      child: Text(
+                        '${_userdata['referral_code']}',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8.0,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Text(
+                          'Referral Code',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
+
+  Widget PointsCard(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Container(
+        width: 152.0,
+        height: 152,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.0),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 8.0,
+              left: 8.0,
+              child: CircleAvatar(
+                radius: 12.0,
+                backgroundColor: Colors.yellow,
+                child: Text(
+                  'P',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Center(
+              child: Text(
+                "${_userdata['poin']}",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 8.0,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Text(
+                  'Poin',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: const Color(0xFF1D7948),
+                size: 50,
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Anda berhasil menggunakan token',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1D7948),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK',
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
