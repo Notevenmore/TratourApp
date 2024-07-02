@@ -28,8 +28,6 @@ class _LoginState extends State<Login> {
 
   void _signInWithGoogle(BuildContext context) async {
     final GoogleSignIn _googleSignIn = GoogleSignIn();
-    inspect(
-        "WKWKWKKWKKWKWKWKWKWKWKWKKWKW\nWKWKWWWKWKWWWKWKWKWWKK\nWKWKWKWWKWKWKWKWKW");
 
     try {
       // Sign in with Google
@@ -71,6 +69,7 @@ class _LoginState extends State<Login> {
             "district": "",
             "village": "",
             "postal_code": "",
+            "referral_code": "",
             "password": encryptText(googleUser.email),
             "tipe": widget.tipe,
             "photo_profile": "assets/img/username.jpg",

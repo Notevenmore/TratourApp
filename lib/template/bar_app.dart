@@ -18,12 +18,20 @@ class BarApp extends StatelessWidget implements PreferredSizeWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ClipOval(
-                  child: Image.asset(
-                    "assets/img/username.jpg",
-                    fit: BoxFit.cover,
-                    width: 48,
-                    height: 48,
-                  ),
+                  child: userdata['photo_profile'] != null &&
+                          userdata['photo_profile'].isNotEmpty
+                      ? Image.network(
+                          userdata['photo_profile'],
+                          fit: BoxFit.cover,
+                          width: 48,
+                          height: 48,
+                        )
+                      : Image.asset(
+                          "assets/img/username.jpg",
+                          fit: BoxFit.cover,
+                          width: 48,
+                          height: 48,
+                        ),
                 ),
                 const SizedBox(width: 8),
                 Column(

@@ -52,6 +52,7 @@ class _RegisterState extends State<Register> {
         "district": "",
         "village": "",
         "postal_code": "",
+        "referral_code": "",
         "password": encryptText(_passwordController.text),
         "tipe": widget.tipe,
         "photo_profile": "assets/img/username.jpg",
