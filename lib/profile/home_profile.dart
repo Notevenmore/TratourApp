@@ -6,6 +6,7 @@ import 'package:tratour/template/navigation_bottom.dart';
 import 'package:flutter/widgets.dart';
 import 'edit_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfilPage extends StatefulWidget {
   final String userid;
@@ -45,7 +46,12 @@ class _ProfilPageState extends State<ProfilPage> {
     } catch (e) {}
   }
 
-  void onboarding() {
+  void onboarding() async {
+    try {
+      await GoogleSignIn().disconnect();
+    } catch (e) {
+      print(e);
+    }
     Navigator.push(
       context,
       MaterialPageRoute(
