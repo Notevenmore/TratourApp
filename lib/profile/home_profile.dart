@@ -90,8 +90,8 @@ class _ProfilPageState extends State<ProfilPage> {
                   children: [
                     CircleAvatar(
                       radius: 30.0,
-                      backgroundImage: _userdata['photo_profile'] != null &&
-                              _userdata['photo_profile'].isNotEmpty
+                      backgroundImage: (_userdata['photo_profile'] != null &&
+                              _userdata['photo_profile'].startsWith('http'))
                           ? NetworkImage(_userdata['photo_profile'])
                           : AssetImage('assets/img/username.jpg')
                               as ImageProvider,
@@ -218,7 +218,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   Widget ReferralCodeCard(BuildContext context) {
     return GestureDetector(
-      onTap: _userdata['referral_code'] == null
+      onTap: _userdata['referral_code'] == ""
           ? () {
               showDialog(
                 context: context,
@@ -305,12 +305,12 @@ class _ProfilPageState extends State<ProfilPage> {
               );
             }
           : null,
-      child: ("${_userdata['referral_code']}" == null)
+      child: (_userdata['referral_code'] == "")
           ? Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(20.0),
               child: Container(
                 width: 152.0,
-                height: 152,
+                height: 152.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12.0),
                   color: Colors.white,
@@ -319,44 +319,47 @@ class _ProfilPageState extends State<ProfilPage> {
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 2,
                       blurRadius: 7,
-                      offset: const Offset(0, 3), // changes position of shadow
+                      offset: Offset(0, 3), // changes position of shadow
                     ),
                   ],
                 ),
                 child: Stack(
                   children: [
                     Positioned(
-                      top: 8.0,
-                      left: 8.0,
-                      child: Icon(Icons
-                          .card_giftcard), // Gantilah dengan ikon yang sesuai
-                    ),
-                    Positioned(
-                      top: 8.0,
-                      right: 8.0,
-                      child: Icon(Icons.more_vert),
-                    ),
-                    Center(
-                      child: Text(
-                        "${_userdata['referral_code']}",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      top: 10.0,
+                      left: 10.0,
+                      child: Icon(
+                        Icons
+                            .card_giftcard, // Replace with the appropriate icon
+                        size: 20,
                       ),
                     ),
-                    Positioned(
-                      bottom: 8.0,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: Text(
-                          'Referral Code',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              height:
+                                  10), // Adjust the height to move text upwards
+                          Text(
+                            'Referral Code',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                              height:
+                                  5), // Adjust the height to move text upwards
+                          Text(
+                            'ketuk untuk memasukkan\nreferral code',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
