@@ -10,6 +10,11 @@ class BarApp extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     print(userdata['photo_profile']);
+    print(userdata['photo_profile']);
+    print(userdata['photo_profile']);
+    print(userdata['photo_profile']);
+    print(userdata['photo_profile']);
+    print(userdata['photo_profile']);
     return AppBar(
       backgroundColor: Colors.white,
       automaticallyImplyLeading: false,
@@ -20,7 +25,7 @@ class BarApp extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 ClipOval(
                   child: (userdata['photo_profile'] != null &&
-                          userdata['photo_profile'].isNotEmpty)
+                          userdata['photo_profile'].startsWith('https'))
                       ? Image.network(
                           userdata['photo_profile'],
                           fit: BoxFit.cover,
