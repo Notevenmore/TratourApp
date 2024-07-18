@@ -29,21 +29,23 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   void initState() {
     super.initState();
-    getData();
   }
 
-  void getData() async {
+  Future<Map<String, dynamic>> getData() async {
     try {
       DocumentSnapshot doc = await FirebaseFirestore.instance
           .collection(widget.usertipe)
           .doc(widget.userid)
           .get();
       if (doc.exists) {
-        setState(() {
-          _userdata = doc.data() as Map<String, dynamic>;
-        });
+        return doc.data() as Map<String, dynamic>;
+      } else {
+        return {};
       }
-    } catch (e) {}
+    } catch (e) {
+      print("Error load data: $e");
+      return {};
+    }
   }
 
   void onboarding() async {
@@ -76,138 +78,152 @@ class _ProfilPageState extends State<ProfilPage> {
       appBar: AppBar(
         title: const Text('Profil Saya'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Foto profil
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 30.0,
-                      backgroundImage: _userdata['photo_profile'] != null &&
-                              _userdata['photo_profile'].isNotEmpty
-                          ? NetworkImage(_userdata['photo_profile'])
-                          : AssetImage('assets/img/username.jpg')
-                              as ImageProvider,
-                    ),
-                    const SizedBox(width: 20.0),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Nama pengguna
-                        Text(
-                          "${_userdata['name']}",
-                          style: const TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+      body: FutureBuilder(
+          future: getData(),
+          builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              _userdata = snapshot.data!;
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Foto profil
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 30.0,
+                              backgroundImage:
+                                  _userdata['photo_profile'] != null &&
+                                          _userdata['photo_profile'].isNotEmpty
+                                      ? NetworkImage(_userdata['photo_profile'])
+                                      : AssetImage('assets/img/username.jpg')
+                                          as ImageProvider,
+                            ),
+                            const SizedBox(width: 20.0),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Nama pengguna
+                                Text(
+                                  "${_userdata['name']}",
+                                  style: const TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 9.0),
+                                // Email pengguna
+                                Text(
+                                  "${_userdata['email']}",
+                                  style: const TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 40.0),
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () => EditProfile(),
+                              color: const Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 9.0),
-                        // Email pengguna
-                        Text(
-                          "${_userdata['email']}",
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                          ),
+                      ),
+
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15, top: 20),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Poin & Kode Referral',
+                              style: TextStyle(
+                                  fontSize: 20.0, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(width: 40.0),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => EditProfile(),
-                      color: const Color.fromARGB(255, 0, 0, 0),
-                    ),
-                  ],
+                      ),
+                      // Kotak untuk Poin dan Kode Referral
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ReferralCodeCard(context),
+                          PointsCard(context),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20.0),
+
+                      // Divider
+                      const Divider(
+                        height: 1.0,
+                      ),
+                      const SizedBox(height: 30.0),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Umum',
+                              style: TextStyle(
+                                  fontSize: 20.0, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Pengaturan
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.notifications),
+                            title: const Text('Notifikasi'),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.help),
+                            title: const Text('Bantuan'),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.star),
+                            title: const Text('Beri Rating Aplikasi'),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.logout,
+                              color: Colors.red,
+                            ),
+                            title: const Text(
+                              'Keluar',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onTap: () => onboarding(),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-
-              const Padding(
-                padding: EdgeInsets.only(left: 15, top: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      'Poin & Kode Referral',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              // Kotak untuk Poin dan Kode Referral
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ReferralCodeCard(context),
-                  PointsCard(context),
-                ],
-              ),
-
-              const SizedBox(height: 20.0),
-
-              // Divider
-              const Divider(
-                height: 1.0,
-              ),
-              const SizedBox(height: 30.0),
-              const Padding(
-                padding: EdgeInsets.only(left: 15),
-                child: Row(
-                  children: [
-                    Text(
-                      'Umum',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Pengaturan
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.notifications),
-                    title: const Text('Notifikasi'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.help),
-                    title: const Text('Bantuan'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.star),
-                    title: const Text('Beri Rating Aplikasi'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.logout,
-                      color: Colors.red,
-                    ),
-                    title: const Text(
-                      'Keluar',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    onTap: () => onboarding(),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+              );
+            } else {
+              return const Center(child: Text("No data Found"));
+            }
+          }),
       bottomNavigationBar: NavigationBottom(
         selectedIndex: selectedIndex,
         userid: widget.userid,
@@ -218,7 +234,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   Widget ReferralCodeCard(BuildContext context) {
     return GestureDetector(
-      onTap: _userdata['referral_code'] == null
+      onTap: _userdata['referral_code'] == ""
           ? () {
               showDialog(
                 context: context,
@@ -305,12 +321,12 @@ class _ProfilPageState extends State<ProfilPage> {
               );
             }
           : null,
-      child: ("${_userdata['referral_code']}" == null)
+      child: _userdata['referral_code'] == ""
           ? Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(20.0),
               child: Container(
                 width: 152.0,
-                height: 152,
+                height: 152.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12.0),
                   color: Colors.white,
@@ -319,44 +335,47 @@ class _ProfilPageState extends State<ProfilPage> {
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 2,
                       blurRadius: 7,
-                      offset: const Offset(0, 3), // changes position of shadow
+                      offset: Offset(0, 3), // changes position of shadow
                     ),
                   ],
                 ),
                 child: Stack(
                   children: [
                     Positioned(
-                      top: 8.0,
-                      left: 8.0,
-                      child: Icon(Icons
-                          .card_giftcard), // Gantilah dengan ikon yang sesuai
-                    ),
-                    Positioned(
-                      top: 8.0,
-                      right: 8.0,
-                      child: Icon(Icons.more_vert),
-                    ),
-                    Center(
-                      child: Text(
-                        "${_userdata['referral_code']}",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      top: 10.0,
+                      left: 10.0,
+                      child: Icon(
+                        Icons
+                            .card_giftcard, // Replace with the appropriate icon
+                        size: 20,
                       ),
                     ),
-                    Positioned(
-                      bottom: 8.0,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: Text(
-                          'Referral Code',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              height:
+                                  10), // Adjust the height to move text upwards
+                          Text(
+                            'Referral Code',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                              height:
+                                  5), // Adjust the height to move text upwards
+                          Text(
+                            'ketuk untuk memasukkan\nreferral code',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

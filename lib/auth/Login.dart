@@ -72,7 +72,7 @@ class _LoginState extends State<Login> {
             "referral_code": "",
             "password": encryptText(googleUser.email),
             "tipe": widget.tipe,
-            "photo_profile": "assets/img/username.jpg",
+            "photo_profile": "",
             "poin": 0
           });
 

@@ -55,7 +55,7 @@ class _RegisterState extends State<Register> {
         "referral_code": "",
         "password": encryptText(_passwordController.text),
         "tipe": widget.tipe,
-        "photo_profile": "assets/img/username.jpg",
+        "photo_profile": "",
         "poin": 0
       });
       login();
