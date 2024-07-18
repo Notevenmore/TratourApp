@@ -321,7 +321,7 @@ class _ProfilPageState extends State<ProfilPage> {
               );
             }
           : null,
-      child: ("${_userdata['referral_code']}" == null)
+      child: _userdata['referral_code'] == ""
           ? Padding(
               padding: const EdgeInsets.all(20.0),
               child: Container(
